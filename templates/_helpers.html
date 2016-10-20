@@ -1,0 +1,120 @@
+{% macro render_field(field, extras) %}
+    <div class="form-group {% if field.errors %}has-feedback has-error{% endif %}">
+        {{- field.label(
+            class="col-sm-3 control-label",
+            text=field.label.text + (" *" if field.flags.required else "")) -}}
+        <div class="col-sm-6 {%- if field.errors %} danger{% endif %}">
+            {%- if field.type in ('SelectField', 'QuerySelectField', 'ModelFieldList') -%}
+                {{- field(class='form-control select2-select'+(' input-lg' if 'large' in extras else '') )|safe -}}
+            {%- elif field.type == 'QueryAjaxSelectField' %}
+                {{- field(class='form-control select2-select')|safe -}}
+            {%- elif field.type == 'SelectMultipleField' %}
+                {{- field(class='form-control select2-select')|safe -}}
+            {%- elif field.type == 'BooleanField' -%}
+                {{- field(class='checkbox checkbox-switch')|safe -}}
+            {%- elif field.type == 'DateField' -%}
+                {{- field(class='form-control datepicker')|safe -}}
+            {%- elif field.type == 'DateTimeField' -%}
+                {{- field(class='form-control datetimepicker')|safe -}}
+                {#                <span class="add-on"><i class="icon-th"></i></span>#}
+            {%- else -%}
+                {% if 'readonly' in extras %}
+                    {{ field(class='form-control', readonly="readonly")|safe }}
+                {% else %}
+                    {{ field(maxlength=field|maxlength, class='form-control')|safe }}
+                {% endif %}
+            {%- endif -%}
+            {%- if field.errors -%}
+                <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                {% for error in field.errors %}
+                    <span class="help-inline danger">{{ error }}</span>
+                {% endfor %}
+            {%- endif -%}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro form_field(field) -%}
+    {% set with_label = kwargs.pop('with_label', False) %}
+    {% set placeholder = '' %}
+    {% if not with_label %}
+        {% set placeholder = field.label.text %}
+    {% endif %}
+    <div class="control-group {% if field.errors %}error{% endif %}">
+        {% if with_label %}
+            <label for="{{ field.id }}" class="control-label">
+                {{ field.label.text }}{% if field.flags.required %} *{% endif %}:
+            </label>
+        {% endif %}
+        <div class="controls">
+            {% set class_ = kwargs.pop('class_', '') %}
+            {% if field.flags.required %}
+                {% set class_ = class_ + ' required' %}
+            {% endif %}
+            {% if field.type == 'BooleanField' %}
+                <label class="checkbox">
+                    {{ field(class_=class_, **kwargs) }}
+                    {{ field.label.text|safe }}
+                </label>
+            {% else %}
+                {% if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
+                    {% set class_ = class_ + ' input-xlarge' %}
+                {% elif field.type == 'FileField' %}
+                    {% set class_ = class_ + ' input-file' %}
+                {% endif %}
+                {{ field(class_=class_, placeholder=placeholder, **kwargs) }}
+            {% endif %}
+            {% if field.errors %}
+                <span class="error help-inline">{{ field.errors|join(', ') }}</span>
+            {% endif %}
+            {% if field.description %}
+                <p class="help-block">{{ field.description|safe }}</p>
+            {% endif %}
+        </div>
+    </div>
+{%- endmacro %}
+
+{% macro awesome_label(text, glyph_type, glyph_name, extra_class='') %}
+    <div class="col-xs-2 col-xs-offset-0 text-center">
+        <span class="btn btn-success btn-block btn-landing {{ extra_class }}">
+            {{ awesome_glyph(glyph_type, glyph_name) }}
+            <br/>{{ text }}</span>
+    </div>
+{% endmacro %}
+
+{% macro awesome_button(text, href, glyph_type, glyph_name, extra_class='') %}
+    <div class="col-xs-2 col-xs-offset-0 text-center">
+        <a class="btn btn-info btn-block btn-landing {{ extra_class }}" href="{{ href }}">
+            {{ awesome_glyph(glyph_type, glyph_name) }}
+            <br/>{{ text }}</a>
+    </div>
+{% endmacro %}
+
+{% macro awesome_glyph(glyph_type, glyph_name) %}
+    {%- if glyph_type == 'fa' -%}
+        <i class="fa-2x glyphicon">&nbsp;</i>
+        <i class="fa fa-2x fa-{{ glyph_name }}"></i>
+        <i class="fa-2x glyphicon">&nbsp;</i>
+    {%- elif glyph_type == 'gi' -%}
+        <i class="fa-2x glyphicon glyphicon-{{ glyph_name }}"></i>
+    {%- endif -%}
+{% endmacro %}
+
+{% macro render_pagination(pagination, base_endpoint) %}
+    <div class=pagination>
+        {% if pagination.pages>1 %}
+            {%- for page in pagination.iter_pages() %}
+                {% if page %}
+                    {% if page != pagination.page %}
+                        <a href="{{ url_for(base_endpoint, page_number=page, **kwargs) }}">{{ page }}</a>
+                    {% else %}
+                        <strong>{{ page }}</strong>
+                    {% endif %}
+                {% else %}
+                    <span class=ellipsis>…</span>
+                {% endif %}
+            {%- endfor %}
+        {% endif %}
+    </div>
+{% endmacro %}
