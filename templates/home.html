@@ -28,13 +28,17 @@
                                         <ul>
                                             {%- for item in question.choices.items() recursive %}
                                                 {%- if item[1].choices -%}
-                                                    <li>{{ item[1].title }}
-                                                        <ul>{{ loop(item[1].choices.items()) }}</ul>
-                                                    </li>
+                                                    <div class="radio">
+                                                        <label><input type="radio" disabled="disabled" checked="">
+                                                            <li>{{ item[1].title }}
+                                                                <ul>{{ loop(item[1].choices.items()) }}</ul>
+                                                            </li>
+                                                        </label>
+                                                    </div>
                                                 {%- else -%}
                                                     <div class="radio">
                                                         <label><input type="radio" name="q{{ question.id }}"
-                                                                      value="{{ item.id }}">{{ question.id }}{{ item[1].title }}
+                                                                      value="{{ item.id }}">{{ item[1].title }}
                                                         </label>
                                                     </div>
                                                 {%- endif %}
