@@ -122,7 +122,8 @@ def translate_tree(question_id, question_data):
             'state': {'id': question_id}
         }
 
-        # if question_item['choices']:
+        # if 'choices' in question_item:
+        #     print(question_item['choices'].items())
         #     nodes = [translate_tree(node_id, node) for node_id, node in question_item['choices'].items()]
         #     result_item['nodes'] = nodes
         print(question_id, question_item)

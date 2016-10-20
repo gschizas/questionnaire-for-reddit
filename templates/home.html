@@ -25,25 +25,26 @@
                             {% elif question.kind == 'tree' %}
                                 <div class="col-sm-10">
                                     <div class="radio">
-                                        <ul>
-                                            {%- for item in question.choices.items() recursive %}
-                                                {%- if item[1].choices -%}
-                                                    <div class="radio">
-                                                        <label><input type="radio" disabled="disabled" checked="">
-                                                            <li>{{ item[1].title }}
-                                                                <ul>{{ loop(item[1].choices.items()) }}</ul>
-                                                            </li>
-                                                        </label>
-                                                    </div>
-                                                {%- else -%}
-                                                    <div class="radio">
-                                                        <label><input type="radio" name="q{{ question.id }}"
-                                                                      value="{{ item.id }}">{{ item[1].title }}
-                                                        </label>
-                                                    </div>
-                                                {%- endif %}
-                                            {%- endfor %}
-                                        </ul>
+                                        <div id="tree_{{ question.id }}"></div>
+                                        {#                                        <ul>#}
+                                        {#                                            {%- for item in question.choices.items() recursive %}#}
+                                        {#                                                {%- if item[1].choices -%}#}
+                                        {#                                                    <div class="radio">#}
+                                        {#                                                        <label><input type="radio" disabled="disabled" checked="">#}
+                                        {#                                                            <li>{{ item[1].title }}#}
+                                        {#                                                                <ul>{{ loop(item[1].choices.items()) }}</ul>#}
+                                        {#                                                            </li>#}
+                                        {#                                                        </label>#}
+                                        {#                                                    </div>#}
+                                        {#                                                {%- else -%}#}
+                                        {#                                                    <div class="radio">#}
+                                        {#                                                        <label><input type="radio" name="q{{ question.id }}"#}
+                                        {#                                                                      value="{{ item.id }}">{{ item[1].title }}#}
+                                        {#                                                        </label>#}
+                                        {#                                                    </div>#}
+                                        {#                                                {%- endif %}#}
+                                        {#                                            {%- endfor %}#}
+                                        {#                                        </ul>#}
                                     </div>
                                 </div>
                             {% endif %}
@@ -53,4 +54,11 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block footer %}
+    <script type="application/javascript">
+        {% for tree_id, tree_data in trees.items() %}
+            $("#tree_{{ tree_id }}").treeview({data: {{ tree_data  | safe}}});
+        {% endfor %}
+    </script>
 {% endblock %}
