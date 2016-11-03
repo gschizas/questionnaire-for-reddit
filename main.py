@@ -8,7 +8,7 @@ import os
 import urllib.parse
 
 import praw
-import yaml
+import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session
 
 # from SqliteSession import SqliteSessionInterface
