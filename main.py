@@ -16,6 +16,7 @@ from flask import Flask, render_template, make_response, request, redirect, url_
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 logging.basicConfig(level=logging.DEBUG)
+first_run = False
 
 
 @app.context_processor
