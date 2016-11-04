@@ -12,6 +12,7 @@ import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session
 
 # from SqliteSession import SqliteSessionInterface
+from flask import Response
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -170,13 +171,13 @@ def home():
 
     return render_template('home.html', questions=questions, trees=trees)
 
+
 @app.route('/done', methods=('POST',))
 def save():
     response = ''
-    for f in request.form:
-        response += f + '\n'
-    return response
-
+    for field, value in request.form.items():
+        response += field + '=' + value + '\n'
+    return Response(response, mimetype='text/plain')
 
 
 def main():
