@@ -170,7 +170,7 @@ def home():
 
     return render_template('home.html', questions=questions, trees=trees)
 
-@app.route('/done')
+@app.route('/done', method=('POST',))
 def save():
     response = ''
     for f in request.form:
