@@ -175,7 +175,8 @@ def home():
 @app.route('/done', methods=('POST',))
 def save():
     response = ''
-    for field, value in request.form.items():
+    questions_sort = lambda x: int(x[0][1:]) if x[0][0] == 'q' else '_' + x[0]
+    for field, value in sorted(request.form.items(), key=questions_sort):
         response += field + '=' + value + '\n'
     return Response(response, mimetype='text/plain')
 
