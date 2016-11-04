@@ -32,7 +32,17 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                            {% elif question.kind == 'tree' %}
+                            {% elif question.kind == 'check' %}
+                                <div class="col-sm-10">
+                                    <div class="radio">
+                                        {% for ch_key, ch_title in question.choices.items() %}
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="q{{ question.id }}"
+                                                       value="{{ ch_key }}">{{ ch_title }}
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>                            {% elif question.kind == 'tree' %}
                                 <div class="col-sm-10">
                                     <div class="radio">
                                         <div id="tree_{{ question.id }}"></div>
