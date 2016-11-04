@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form" method="post" action="{{ url_for('save') }}">
                     {% for question in questions %}
                         {% if question.kind != 'header' %}
                         {{ question.id }}. {{ question.title }}

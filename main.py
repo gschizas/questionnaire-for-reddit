@@ -170,6 +170,14 @@ def home():
 
     return render_template('home.html', questions=questions, trees=trees)
 
+@app.route('/done')
+def save():
+    response = ''
+    for f in request.form:
+        response += f + '\n'
+    return response
+
+
 
 def main():
     global first_run
