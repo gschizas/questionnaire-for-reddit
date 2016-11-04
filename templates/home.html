@@ -32,7 +32,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                            {% elif question.kind == 'check' %}
+                            {% elif question.kind == 'checkbox' %}
                                 <div class="col-sm-10">
                                     <div class="radio">
                                         {% for ch_key, ch_title in question.choices.items() %}
