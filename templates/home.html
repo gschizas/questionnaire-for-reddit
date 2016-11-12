@@ -7,7 +7,7 @@
                 <form class="form-horizontal" role="form" method="post" action="{{ url_for('save') }}">
                     {% for question in questions %}
                         {% if question.kind != 'header' %}
-                        {{ question.id }}. {{ question.title }}
+                            {{ question.id }}. {{ question.title }}
                         {% endif %}
                         <div class="form-group">
                             <div class="col-sm-2">
@@ -43,29 +43,28 @@
                                             </label>
                                         {% endfor %}
                                     </div>
-                                </div>                            {% elif question.kind == 'tree' %}
+                                </div>
+                            {% elif question.kind == 'tree' %}
                                 <div class="col-sm-10">
-                                    <div class="radio">
-                                        <div id="tree_{{ question.id }}"></div>
-                                        {#                                        <ul>#}
-                                        {#                                            {%- for item in question.choices.items() recursive %}#}
-                                        {#                                                {%- if item[1].choices -%}#}
-                                        {#                                                    <div class="radio">#}
-                                        {#                                                        <label><input type="radio" disabled="disabled" checked="">#}
-                                        {#                                                            <li>{{ item[1].title }}#}
-                                        {#                                                                <ul>{{ loop(item[1].choices.items()) }}</ul>#}
-                                        {#                                                            </li>#}
-                                        {#                                                        </label>#}
-                                        {#                                                    </div>#}
-                                        {#                                                {%- else -%}#}
-                                        {#                                                    <div class="radio">#}
-                                        {#                                                        <label><input type="radio" name="q{{ question.id }}"#}
-                                        {#                                                                      value="{{ item.id }}">{{ item[1].title }}#}
-                                        {#                                                        </label>#}
-                                        {#                                                    </div>#}
-                                        {#                                                {%- endif %}#}
-                                        {#                                            {%- endfor %}#}
-                                        {#                                        </ul>#}
+                                    <div class="tree well" id="tree_{{ question.id }}">
+                                        <ul>
+                                            {%- for item in question.choices.items() recursive %}
+                                                <li>
+                                                    {%- if item[1].choices -%}
+                                                        <span >
+                                                            <input type="radio" name="q{{ question.id }}"
+                                                                   value="{{ item[0] }}"/>&nbsp;
+                                                            <i class="icon-folder-open"></i>{{ item[1].title }}</span>
+                                                        <ul>{{ loop(item[1].choices.items()) }}</ul>
+                                                    {%- else -%}
+                                                        <span>
+                                                            <input type="radio" name="q{{ question.id }}"
+                                                                   value="{{ item[0] }}"/>&nbsp;
+                                                            <i class="icon-leaf"></i>{{ item[1].title }}</span>
+                                                    {%- endif %}
+                                                </li>
+                                            {%- endfor %}
+                                        </ul>
                                     </div>
                                 </div>
                             {% elif question.kind=='text' %}
@@ -94,8 +93,19 @@
 {% endblock %}
 {% block footer %}
     <script type="application/javascript">
-        {% for tree_id, tree_data in trees.items() %}
-            $("#tree_{{ tree_id }}").treeview({data: {{ tree_data | safe}}});
-        {% endfor %}
+        $(function () {
+            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+            $('.tree li.parent_li > span').on('click', function (e) {
+                var children = $(this).parent('li.parent_li').find(' > ul > li');
+                if (children.is(":visible")) {
+                    children.hide('fast');
+                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+                } else {
+                    children.show('fast');
+                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+                }
+                e.stopPropagation();
+            });
+        });
     </script>
 {% endblock %}
