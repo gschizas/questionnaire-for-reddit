@@ -10,13 +10,32 @@ import urllib.parse
 import praw
 import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session
-
-# from SqliteSession import SqliteSessionInterface
+from flask import Response
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 logging.basicConfig(level=logging.DEBUG)
 first_run = False
+
+
+def dict_representer(dumper, data):
+    return dumper.represent_dict(data.iteritems())
+
+
+def dict_constructor(loader, node):
+    return collections.OrderedDict(loader.construct_pairs(node))
+
+
+def literal_str_representer(dumper, data):
+    if '\n' in data:
+        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data, style='|')
+    else:
+        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data)
+
+
+yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
+yaml.add_representer(collections.OrderedDict, dict_representer)
+yaml.add_representer(str, literal_str_representer)
 
 
 @app.context_processor
@@ -136,6 +155,8 @@ def translate_tree(question_id, question_data):
 
 @app.route('/home')
 def home():
+    if 'me' not in session:
+        return make_response(redirect(url_for('index')))
     with open('questionnaire.yml', 'r', encoding='utf8') as f:
         questions = list(yaml.load_all(f))
     trees = {}
@@ -151,28 +172,19 @@ def home():
     return render_template('home.html', questions=questions, trees=trees)
 
 
-def dict_representer(dumper, data):
-    return dumper.represent_dict(data.iteritems())
-
-
-def dict_constructor(loader, node):
-    return collections.OrderedDict(loader.construct_pairs(node))
-
-
-def literal_str_representer(dumper, data):
-    if '\n' in data:
-        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data, style='|')
-    else:
-        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data)
+@app.route('/done', methods=('POST',))
+def save():
+    response = ''
+    questions_sort = lambda x: int(x[0][1:]) if x[0][0] == 'q' else '_' + x[0]
+    for field, value in sorted(request.form.items(), key=questions_sort):
+        response += field + '=' + value + '\n'
+    return Response(response, mimetype='text/plain')
 
 
 def main():
     global first_run
     # app.session_interface = SqliteSessionInterface()
     first_run = True
-    yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
-    yaml.add_representer(collections.OrderedDict, dict_representer)
-    yaml.add_representer(str, literal_str_representer)
     app.jinja_env.auto_reload = True
     app.run(port=5015, host='0.0.0.0', debug=True)
 
