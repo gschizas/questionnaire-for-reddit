@@ -139,10 +139,14 @@ def home():
     with open('questionnaire.yml', 'r', encoding='utf8') as f:
         questions = list(yaml.load_all(f))
     trees = {}
-    for question_id, question in enumerate(questions):
-        question['id'] = 1 + question_id
+    question_id = 1
+    for question in questions:
+        if question['kind'] == 'header':
+            continue
+        question['id'] = question_id
         if question['kind'] == 'tree':
             trees[question['id']] = translate_tree(question['id'], question['choices'])
+        question_id += 1
 
     return render_template('home.html', questions=questions, trees=trees)
 
