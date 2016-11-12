@@ -10,8 +10,6 @@ import urllib.parse
 import praw
 import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session
-
-# from SqliteSession import SqliteSessionInterface
 from flask import Response
 
 app = Flask(__name__)
@@ -157,6 +155,8 @@ def translate_tree(question_id, question_data):
 
 @app.route('/home')
 def home():
+    if 'me' not in session:
+        return make_response(redirect(url_for('index')))
     with open('questionnaire.yml', 'r', encoding='utf8') as f:
         questions = list(yaml.load_all(f))
     trees = {}
