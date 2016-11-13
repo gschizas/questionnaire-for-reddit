@@ -67,6 +67,9 @@
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
                                                             </label>
+                                                            {%- if  item[1].is_text %}
+                                                                <input type="text" name="q_{{ question.id }}_text" />
+                                                            {%- endif %}
                                                         </span>
                                                     {%- endif %}
                                                 </li>
