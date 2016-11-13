@@ -27,7 +27,7 @@
                                     <div class="radio">
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="radio">
-                                                <input type="radio" name="q{{ question.id }}"
+                                                <input type="radio" name="q_{{ question.id }}"
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
@@ -38,7 +38,7 @@
                                     <div class="radio">
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="checkbox">
-                                                <input type="checkbox" name="q{{ question.id }}"
+                                                <input type="checkbox" name="q_{{ question.id }}"
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
@@ -49,18 +49,28 @@
                                     <div class="tree well" id="tree_{{ question.id }}">
                                         <ul>
                                             {%- for item in question.choices.items() recursive %}
-                                                <li>
+                                                <li {{ 'style=display:none' if loop.depth > 1 }}>
                                                     {%- if item[1].choices -%}
-                                                        <span >
-                                                            <input type="radio" name="q{{ question.id }}"
+                                                        <span>
+                                                            <input type="radio" name="q_{{ question.id }}"
                                                                    value="{{ item[0] }}"/>&nbsp;
-                                                            <i class="icon-folder-open"></i>{{ item[1].title }}</span>
+                                                            <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                                <i class="icon-folder-open"></i>{{ item[1].title }}
+                                                            </label>
+                                                        </span>
                                                         <ul>{{ loop(item[1].choices.items()) }}</ul>
                                                     {%- else -%}
                                                         <span>
-                                                            <input type="radio" name="q{{ question.id }}"
+                                                            <input type="radio" name="q_{{ question.id }}"
+                                                                   id="q_{{ question.id }}_{{ item[0] }}"
                                                                    value="{{ item[0] }}"/>&nbsp;
-                                                            <i class="icon-leaf"></i>{{ item[1].title }}</span>
+                                                            <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                                <i class="icon-leaf"></i>{{ item[1].title }}
+                                                            </label>
+                                                            {%- if  item[1].is_text %}
+                                                                <input type="text" name="q_{{ question.id }}_text" />
+                                                            {%- endif %}
+                                                        </span>
                                                     {%- endif %}
                                                 </li>
                                             {%- endfor %}
@@ -71,7 +81,7 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label class="input">
-                                            <input type="text" name="q{{ question.id }}">
+                                            <input type="text" name="q_{{ question.id }}">
                                         </label>
                                     </div>
                                 </div>
@@ -79,7 +89,7 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label>
-                                            <textarea name="q{{ question.id }}" cols="80" rows="5"></textarea>
+                                            <textarea name="q_{{ question.id }}" cols="80" rows="5"></textarea>
                                         </label>
                                     </div>
                                 </div>
@@ -94,7 +104,7 @@
 {% block footer %}
     <script type="application/javascript">
         $(function () {
-            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Expand this branch');
             $('.tree li.parent_li > span').on('click', function (e) {
                 var children = $(this).parent('li.parent_li').find(' > ul > li');
                 if (children.is(":visible")) {
