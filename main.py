@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import collections
 import datetime
-import json
 import logging
 import os
 import urllib.parse
@@ -134,25 +133,6 @@ def index():
         # return render_template('index.html')
 
 
-def translate_tree(question_id, question_data):
-    result = []
-    for question_id, question_item in question_data.items():
-        result_item = {
-            'text': question_item['title'],
-            'state': {'id': question_id}
-        }
-
-        # if 'choices' in question_item:
-        #     print(question_item['choices'].items())
-        #     nodes = []
-        #     for choice_id, choice_data in question_item['choices'].items():
-        #         nodes.append(translate_tree(choice_id, choice_data))
-        #     result_item['nodes'] = nodes
-        print(question_id, question_item)
-        result.append(result_item)
-    return json.dumps(result)
-
-
 @app.route('/home')
 def home():
     if 'me' not in session:
@@ -165,11 +145,9 @@ def home():
         if question['kind'] == 'header':
             continue
         question['id'] = question_id
-        if question['kind'] == 'tree':
-            trees[question['id']] = translate_tree(question['id'], question['choices'])
         question_id += 1
 
-    return render_template('home.html', questions=questions, trees=trees)
+    return render_template('home.html', questions=questions)
 
 
 @app.route('/done', methods=('POST',))
