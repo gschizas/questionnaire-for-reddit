@@ -11,6 +11,8 @@ import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session
 from flask import Response
 
+from models import Base, Session, engine, Vote, Answer
+
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 logging.basicConfig(level=logging.DEBUG)
@@ -162,6 +164,7 @@ def save():
 def main():
     global first_run
     # app.session_interface = SqliteSessionInterface()
+    # Base.metadata.create_all(engine)
     first_run = True
     app.jinja_env.auto_reload = True
     app.run(port=5015, host='0.0.0.0', debug=True)
