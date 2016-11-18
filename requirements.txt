@@ -3,3 +3,5 @@ praw>=3.5.0
 ruamel.yaml>=0.12.15
 gunicorn>=19.6.0
 SQLAlchemy>=1.1.4
+pg8000>=1.10.6
+
