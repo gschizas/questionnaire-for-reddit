@@ -7,11 +7,14 @@ import os
 import urllib.parse
 
 import praw
+import requests
 import ruamel.yaml as yaml
-from flask import Flask, render_template, make_response, request, redirect, url_for, session
+from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort
 from flask import Response
 
 from models import Base, Session, engine, Vote, Answer
+
+USER_AGENT = 'Questionnaire for Reddit by /u/gschizas version 0.2'
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -62,7 +65,7 @@ def dropdown(table_name):
 
 
 def reddit_agent():
-    r = praw.Reddit(user_agent='Questionnaire for Reddit by /u/gschizas version 0.1')
+    r = praw.Reddit(user_agent=USER_AGENT)
     r.config.decode_html_entities = True
     r.config.log_requests = 2
 
@@ -139,9 +142,13 @@ def index():
 def home():
     if 'me' not in session:
         return make_response(redirect(url_for('index')))
-    with open('questionnaire.yml', 'r', encoding='utf8') as f:
-        questions = list(yaml.load_all(f))
-    trees = {}
+    url = os.getenv('QUESTIONNAIRE_URL')
+    questionnaire_data = requests.get(url, params=dict(raw_json=1)).json()
+    if 'data' not in questionnaire_data:
+        print(questionnaire_data)
+        abort(503)
+    questions_list = questionnaire_data['data']['content_md']
+    questions = list(yaml.load_all(questions_list))
     question_id = 1
     for question in questions:
         if question['kind'] == 'header':
