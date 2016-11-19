@@ -143,7 +143,7 @@ def home():
     if 'me' not in session:
         return make_response(redirect(url_for('index')))
     url = os.getenv('QUESTIONNAIRE_URL')
-    questionnaire_data = requests.get(url, params=dict(raw_json=1)).json()
+    questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
     if 'data' not in questionnaire_data:
         print(questionnaire_data)
         abort(503)
