@@ -5,7 +5,6 @@ import datetime
 import logging
 import os
 import pathlib
-import re
 import urllib.parse
 
 import praw
@@ -39,18 +38,19 @@ def literal_str_representer(dumper, data):
         return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data)
 
 
+def carry_over_compose_document(self):
+    self.get_event()
+    node = self.compose_node(None, None)
+    self.get_event()
+    # this prevents cleaning of anchors between documents in **one stream**
+    # self.anchors = {}
+    return node
+
+
 yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
 yaml.add_representer(collections.OrderedDict, dict_representer)
 yaml.add_representer(str, literal_str_representer)
-
-
-def yaml_load_all_with_aliases(yaml_text):
-    if not yaml_text.startswith('---'):
-        yaml_text = '---\n' + yaml_text
-    for pat, repl in [('^', '  '), ('^\s*---\s*$', '-'), ('^\s+\.{3}$\n', '')]:
-        yaml_text = re.sub(pat, repl, yaml_text, flags=re.MULTILINE)
-    yaml_text = yaml_text.strip()
-    return yaml.load(yaml_text)
+yaml.composer.Composer.compose_document = carry_over_compose_document
 
 
 @app.context_processor
@@ -164,7 +164,7 @@ def home():
             print(questionnaire_data)
             abort(503)
         questions_list = questionnaire_data['data']['content_md']
-    questions = yaml_load_all_with_aliases(questions_list)
+    questions = list(yaml.round_trip_load_all(questions_list))
     question_id = 1
     for question in questions:
         if question['kind'] == 'header':
