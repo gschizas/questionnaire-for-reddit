@@ -31,6 +31,12 @@
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
+                                        {%- if question.other %}
+                                            <label class="radio" for="q_{{ question.id }}_text">
+                                                {{ question.other }}
+                                                <input type="text" name="q_{{ question.id }}_text"/>
+                                            </label>
+                                        {%- endif %}
                                     </div>
                                 </div>
                             {% elif question.kind == 'checkbox' %}
@@ -42,6 +48,12 @@
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
+                                        {%- if question.other %}
+                                            <label class="radio" for="q_{{ question.id }}_text">
+                                                {{ question.other }}
+                                                <input type="text" name="q_{{ question.id }}_text"/>
+                                            </label>
+                                        {%- endif %}
                                     </div>
                                 </div>
                             {% elif question.kind == 'tree' %}
