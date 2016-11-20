@@ -65,9 +65,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         {% if user %}
-                            <li><a href="#">Inbox: {{ user.inbox_count }}</a></li>
-                            <li><a href="#">Link Karma: {{ user.link_karma }}</a></li>
-                            <li><a href="#">Comment Karma: {{ user.comment_karma }}</a></li>
+                            <li><a href="https://www.reddit.com/message/inbox/" target="_blank">Inbox: {{ user.inbox_count }}</a></li>
+                            <li><a href="https://www.reddit.com/user/me/submitted/" target="_blank">Link Karma: {{ user.link_karma }}</a></li>
+                            <li><a href="https://www.reddit.com/user/me/comments/" target="_blank">Comment Karma: {{ user.comment_karma }}</a></li>
                         {% endif %}
                     </ul>
                 </li>
