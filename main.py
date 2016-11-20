@@ -4,6 +4,7 @@ import collections
 import datetime
 import logging
 import os
+import pathlib
 import re
 import urllib.parse
 
@@ -153,11 +154,15 @@ def home():
     if 'me' not in session:
         return make_response(redirect(url_for('index')))
     url = os.getenv('QUESTIONNAIRE_URL')
-    questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
-    if 'data' not in questionnaire_data:
-        print(questionnaire_data)
-        abort(503)
-    questions_list = questionnaire_data['data']['content_md']
+    if url.startswith('file://'):
+        file_path = urllib.parse.urlparse(url).path
+        questions_list = pathlib.Path(file_path).read_text(encoding='utf8')
+    else:
+        questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
+        if 'data' not in questionnaire_data:
+            print(questionnaire_data)
+            abort(503)
+        questions_list = questionnaire_data['data']['content_md']
     questions = yaml_load_all_with_aliases(questions_list)
     question_id = 1
     for question in questions:
