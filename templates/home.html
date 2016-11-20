@@ -85,9 +85,7 @@
                                                 <li {{ 'style=display:none' if loop.depth > 1 }}>
                                                     {%- if item[1].choices -%}
                                                         <span>
-                                                            <input type="checkbox" name="q_{{ question.id }}_{{ item[0] }}"
-                                                                   value="YES"/>
-                                                            <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-folder-open"></i>{{ item[1].title }}
                                                             </label>
                                                         </span>
