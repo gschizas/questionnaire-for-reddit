@@ -49,8 +49,6 @@ def yaml_load_all_with_aliases(yaml_text):
     for pat, repl in [('^', '  '), ('^\s*---\s*$', '-'), ('^\s+\.{3}$\n', '')]:
         yaml_text = re.sub(pat, repl, yaml_text, flags=re.MULTILINE)
     yaml_text = yaml_text.strip()
-    with open('/tmp/q.yml', mode='w') as f:
-        f.write(yaml_text)
     return yaml.safe_load(yaml_text)
 
 
