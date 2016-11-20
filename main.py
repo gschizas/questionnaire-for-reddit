@@ -51,7 +51,7 @@ def yaml_load_all_with_aliases(yaml_text):
     yaml_text = yaml_text.strip()
     with open('/tmp/q.yml', mode='w') as f:
         f.write(yaml_text)
-    return yaml.load(yaml_text)
+    return yaml.safe_load(yaml_text)
 
 
 @app.context_processor
