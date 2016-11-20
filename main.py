@@ -156,6 +156,7 @@ def home():
     url = os.getenv('QUESTIONNAIRE_URL')
     if url.startswith('file://'):
         file_path = urllib.parse.urlparse(url).path
+        file_path = urllib.parse.unquote_plus(file_path)
         questions_list = pathlib.Path(file_path).read_text(encoding='utf8')
     else:
         questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
