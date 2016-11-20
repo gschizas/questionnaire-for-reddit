@@ -4,6 +4,7 @@ import collections
 import datetime
 import logging
 import os
+import re
 import urllib.parse
 
 import praw
@@ -40,6 +41,17 @@ def literal_str_representer(dumper, data):
 yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
 yaml.add_representer(collections.OrderedDict, dict_representer)
 yaml.add_representer(str, literal_str_representer)
+
+
+def yaml_load_all_with_aliases(yaml_text):
+    if not yaml_text.startswith('---'):
+        yaml_text = '---\n' + yaml_text
+    for pat, repl in [('^', '  '), ('^\s*---\s*$', '-'), ('^\s+\.{3}$\n', '')]:
+        yaml_text = re.sub(pat, repl, yaml_text, flags=re.MULTILINE)
+    yaml_text = yaml_text.strip()
+    with open('/tmp/q.yml', mode='w') as f:
+        f.write(yaml_text)
+    return yaml.load(yaml_text)
 
 
 @app.context_processor
@@ -148,7 +160,7 @@ def home():
         print(questionnaire_data)
         abort(503)
     questions_list = questionnaire_data['data']['content_md']
-    questions = list(yaml.load_all(questions_list))
+    questions = yaml_load_all_with_aliases(questions_list)
     question_id = 1
     for question in questions:
         if question['kind'] == 'header':
