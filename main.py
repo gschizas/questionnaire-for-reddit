@@ -182,11 +182,21 @@ def home():
 
 @app.route('/done', methods=('POST',))
 def save():
-    response = 'userid=' + session['me']['id'] + '\n'
-    questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
-    for field, value in sorted(request.form.items(), key=questions_sort):
-        response += field + '=' + value + '\n'
-    return Response(response, mimetype='text/plain')
+    with app.app_context():
+        v = model.Vote()
+        v.userid = session['me']['id']
+        model.db.session.add(v)
+        # response = 'userid=' + session['me']['id'] + '\n'
+        questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
+        for field, value in sorted(request.form.items(), key=questions_sort):
+            a = model.Answer()
+            a.code = field
+            a.answer_value = value
+            a.vote = v
+            model.db.session.add(a)
+            #response += field + '=' + value + '\n'
+        model.db.session.commit()
+    return Response("Thank you for voting", mimetype='text/plain')
 
 
 def main():
