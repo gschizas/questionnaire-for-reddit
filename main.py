@@ -13,14 +13,19 @@ import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort
 from flask import Response
 
-from models import Base, Session, engine, Vote, Answer
+import models
 
 USER_AGENT = 'Questionnaire for Reddit by /u/gschizas version 0.2'
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 logging.basicConfig(level=logging.DEBUG)
 first_run = False
+
+models.db.init_app(app)
+with app.app_context():
+    models.db.create_all()
 
 
 def dict_representer(dumper, data):
@@ -187,7 +192,6 @@ def save():
 def main():
     global first_run
     # app.session_interface = SqliteSessionInterface()
-    # Base.metadata.create_all(engine)
     first_run = True
     app.jinja_env.auto_reload = True
     app.run(port=5000, host='0.0.0.0', debug=True)
