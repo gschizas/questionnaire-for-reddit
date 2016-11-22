@@ -27,14 +27,20 @@
                                     <div class="radio">
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="radio">
-                                                <input type="radio" name="q_{{ question.id }}"
+                                                <input type="radio"
+                                                       name="q_{{ question.id }}"
+                                                       {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
                                         {%- if question.other %}
                                             <label class="radio" for="q_{{ question.id }}_text">
+                                                <input type="radio"
+                                                       name="q_{{ question.id }}"
+                                                       {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
+                                                       value="{{ ch_key }}">
                                                 {{ question.other }}
-                                                <input type="text" name="q_{{ question.id }}_text"/>
+                                                <input type="text" name="q_{{ question.id }}_text" value="{{ answers["q_{}_text".format(question.id)] }}"/>
                                             </label>
                                         {%- endif %}
                                     </div>
@@ -44,14 +50,18 @@
                                     <div class="radio">
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="checkbox">
-                                                <input type="checkbox" name="q_{{ question.id }}"
-                                                       value="{{ ch_key }}">{{ ch_title }}
+                                                <input type="checkbox"
+                                                       name="q_{{ question.id }}_{{ ch_key }}"
+                                                       {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="ON"}}
+                                                       value="ON">{{ ch_title }}
                                             </label>
                                         {% endfor %}
                                         {%- if question.other %}
                                             <label class="radio" for="q_{{ question.id }}_text">
                                                 {{ question.other }}
-                                                <input type="text" name="q_{{ question.id }}_text"/>
+                                                <input type="text"
+                                                       name="q_{{ question.id }}_text"
+                                                       value="{{ answers["q_{}_text".format(question.id)] }}"/>
                                             </label>
                                         {%- endif %}
                                     </div>
