@@ -205,7 +205,6 @@ def save():
             a.answer_value = value
             a.vote = v
             model.db.session.add(a)
-            #response += field + '=' + value + '\n'
         model.db.session.commit()
     return Response("Thank you for voting", mimetype='text/plain')
 
