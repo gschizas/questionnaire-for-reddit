@@ -25,7 +25,6 @@ class Answer(db.Model):
 
     answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String, primary_key=True)
-    question_id = db.Column(db.String)
     answer_value = db.Column(db.String)
     vote_id = db.Column(db.Integer, db.ForeignKey('Votes.vote_id'))
     vote = db.relationship('Vote', backref='answers')
