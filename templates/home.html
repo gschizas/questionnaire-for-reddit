@@ -135,7 +135,7 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label class="input">
-                                            <input type="text" name="q_{{ question.id }}">
+                                            <input type="text" name="q_{{ question.id }}" value="{{ answers["q_{}".format(question.id)] }}">
                                         </label>
                                     </div>
                                 </div>
@@ -143,7 +143,7 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label>
-                                            <textarea name="q_{{ question.id }}" cols="80" rows="5"></textarea>
+                                            <textarea name="q_{{ question.id }}" cols="80" rows="5">{{ answers["q_{}".format(question.id)] }}</textarea>
                                         </label>
                                     </div>
                                 </div>
