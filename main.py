@@ -183,14 +183,18 @@ def home():
 @app.route('/done', methods=('POST',))
 def save():
     with app.app_context():
-        v = model.Vote()
-        v.userid = session['me']['id']
+        v = model.Vote.query.filter_by(userid=session['me']['id']).first()
+        if v is None:
+            v = model.Vote()
+            v.userid = session['me']['id']
         model.db.session.add(v)
         # response = 'userid=' + session['me']['id'] + '\n'
         questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
         for field, value in sorted(request.form.items(), key=questions_sort):
-            a = model.Answer()
-            a.code = field
+            a = model.Answer.query.filter_by(code=field).first()
+            if a is None:
+                a = model.Answer()
+                a.code = field
             a.answer_value = value
             a.vote = v
             model.db.session.add(a)
