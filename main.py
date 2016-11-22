@@ -205,6 +205,7 @@ def save():
         if v is None:
             v = model.Vote()
             v.userid = session['me']['id']
+        v.datestamp = datetime.datetime.utcnow()
         model.db.session.add(v)
         # response = 'userid=' + session['me']['id'] + '\n'
         questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
