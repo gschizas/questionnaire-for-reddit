@@ -17,6 +17,7 @@ from flask import Response
 import model
 
 USER_AGENT = 'Questionnaire for Reddit by /u/gschizas version 0.2'
+EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -74,6 +75,17 @@ def max_length(iterable):
     validators_max_length = [v.max for v in iterable.validators if 'wtforms.validators.Length' in str(type(v))]
     if len(validators_max_length) > 0:
         return max(validators_max_length)
+
+
+@app.template_filter('emojiflag')
+def emojiflag(flag_letters):
+    if len(flag_letters) != 2:
+        return flag_letters
+    if flag_letters[0] < 'A' or flag_letters[0] > 'Z':
+        return flag_letters
+    if flag_letters[1] < 'A' or flag_letters[0] > 'Z':
+        return flag_letters
+    return chr(ord(flag_letters[0]) + EMOJI_FLAG_OFFSET) + chr(ord(flag_letters[1]) + EMOJI_FLAG_OFFSET)
 
 
 @app.route('/_dropdown/<table_name>', methods=('GET', 'POST'))
