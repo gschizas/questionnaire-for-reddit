@@ -52,8 +52,8 @@
                                             <label class="checkbox">
                                                 <input type="checkbox"
                                                        name="q_{{ question.id }}_{{ ch_key }}"
-                                                       {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="ON"}}
-                                                       value="ON">{{ ch_title }}
+                                                       {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="YES"}}
+                                                       value="YES">{{ ch_title }}
                                             </label>
                                         {% endfor %}
                                         {%- if question.other %}
