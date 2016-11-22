@@ -5,7 +5,8 @@ import datetime
 import logging
 import os
 import pathlib
-import urllib.parse, urllib.request
+import urllib.parse
+import urllib.request
 
 import praw
 import requests
