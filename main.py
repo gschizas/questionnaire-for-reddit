@@ -5,7 +5,7 @@ import datetime
 import logging
 import os
 import pathlib
-import urllib.parse
+import urllib.parse, urllib.request
 
 import praw
 import requests
@@ -160,8 +160,8 @@ def home():
         return make_response(redirect(url_for('index')))
     url = os.getenv('QUESTIONNAIRE_URL')
     if url.startswith('file://'):
-        file_path = urllib.parse.urlparse(url).path
-        file_path = urllib.parse.unquote_plus(file_path)
+        url_obj = urllib.parse.urlparse(url)
+        file_path = urllib.request.url2pathname(url_obj.path)
         questions_list = pathlib.Path(file_path).read_text(encoding='utf8')
     else:
         questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
