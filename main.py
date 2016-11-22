@@ -191,6 +191,8 @@ def save():
         # response = 'userid=' + session['me']['id'] + '\n'
         questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
         for field, value in sorted(request.form.items(), key=questions_sort):
+            if value is None or value == '':
+                continue
             a = model.Answer.query.filter_by(code=field).first()
             if a is None:
                 a = model.Answer()
