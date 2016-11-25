@@ -160,6 +160,33 @@
                                         </label>
                                     </div>
                                 </div>
+                            {% elif question.kind=="scale-matrix" %}
+                                <div class="col-sm-10">
+                                    <div class="radio">
+                                        {% if question.text %}
+                                            <div>{{ question.text }}</div>
+                                        {% endif %}
+
+
+                                        {% for ch_title in question.lines %}
+                                            <div class="not_hidden">{{ ch_title }}</div>
+
+                                            <input id="q_{{ question.id }}_{{ loop.index }}" type="text"
+                                                   data-provide="slider"
+                                                   data-slider-ticks='[{{ range(1,6)|join(',')|safe }}]'
+                                                   data-slider-ticks-labels='[{{ question.choices.values()|quote_list|join(',')|safe }}]'
+                                                   data-slider-min="1"
+                                                   data-slider-max="5"
+                                                   data-slider-step="1"
+                                                   data-slider-value="3"
+                                            />
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             {% endif %}
                         </div>
                     {% endfor %}

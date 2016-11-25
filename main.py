@@ -88,6 +88,11 @@ def emojiflag(flag_letters):
     return chr(ord(flag_letters[0]) + EMOJI_FLAG_OFFSET) + chr(ord(flag_letters[1]) + EMOJI_FLAG_OFFSET)
 
 
+@app.template_filter('quote_list')
+def surround_by_quote(a_list):
+    return ['"{}"'.format(an_element) for an_element in a_list]
+
+
 @app.route('/_dropdown/<table_name>', methods=('GET', 'POST'))
 def dropdown(table_name):
     pass
