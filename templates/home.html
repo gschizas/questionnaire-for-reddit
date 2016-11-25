@@ -25,11 +25,14 @@
                             {% elif question.kind == 'radio' %}
                                 <div class="col-sm-10">
                                     <div class="radio">
+                                        {% if question.text %}
+                                            <div>{{ question.text }}</div>
+                                        {% endif %}
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="radio">
                                                 <input type="radio"
                                                        name="q_{{ question.id }}"
-                                                       {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
+                                                        {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
                                                        value="{{ ch_key }}">{{ ch_title }}
                                             </label>
                                         {% endfor %}
@@ -37,10 +40,11 @@
                                             <label class="radio" for="q_{{ question.id }}_text">
                                                 <input type="radio"
                                                        name="q_{{ question.id }}"
-                                                       {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
+                                                        {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
                                                        value="{{ ch_key }}">
                                                 {{ question.other }}
-                                                <input type="text" name="q_{{ question.id }}_text" value="{{ answers["q_{}_text".format(question.id)] }}"/>
+                                                <input type="text" name="q_{{ question.id }}_text"
+                                                       value="{{ answers["q_{}_text".format(question.id)] }}"/>
                                             </label>
                                         {%- endif %}
                                     </div>
@@ -48,11 +52,14 @@
                             {% elif question.kind == 'checkbox' %}
                                 <div class="col-sm-10">
                                     <div class="radio">
+                                        {% if question.text %}
+                                            <div>{{ question.text }}</div>
+                                        {% endif %}
                                         {% for ch_key, ch_title in question.choices.items() %}
                                             <label class="checkbox">
                                                 <input type="checkbox"
                                                        name="q_{{ question.id }}_{{ ch_key }}"
-                                                       {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="YES"}}
+                                                        {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="YES" }}
                                                        value="YES">{{ ch_title }}
                                             </label>
                                         {% endfor %}
@@ -76,7 +83,7 @@
                                                         <span>
                                                             <input type="radio"
                                                                    name="q_{{ question.id }}"
-                                                                   {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
+                                                                    {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
                                                                    value="{{ item[0] }}"/>&nbsp;
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-folder-open"></i>{{ item[1].title }}
@@ -87,7 +94,7 @@
                                                         <span>
                                                             <input type="radio" name="q_{{ question.id }}"
                                                                    id="q_{{ question.id }}_{{ item[0] }}"
-                                                                   {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
+                                                                    {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
                                                                    value="{{ item[0] }}"/>&nbsp;
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
@@ -120,7 +127,7 @@
                                                             <input type="checkbox"
                                                                    name="q_{{ question.id }}_{{ item[0] }}"
                                                                    id="q_{{ question.id }}_{{ item[0] }}"
-                                                                   {{ "checked" if answers["q_{}_{}".format(question.id, item[0])]=="YES"}}
+                                                                    {{ "checked" if answers["q_{}_{}".format(question.id, item[0])]=="YES" }}
                                                                    value="YES"/>&nbsp;
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
@@ -139,7 +146,8 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label class="input">
-                                            <input type="text" name="q_{{ question.id }}" value="{{ answers["q_{}".format(question.id)] }}">
+                                            <input type="text" name="q_{{ question.id }}"
+                                                   value="{{ answers["q_{}".format(question.id)] }}">
                                         </label>
                                     </div>
                                 </div>
@@ -147,7 +155,8 @@
                                 <div class="col-sm-10">
                                     <div class="text">
                                         <label>
-                                            <textarea name="q_{{ question.id }}" cols="80" rows="5">{{ answers["q_{}".format(question.id)] }}</textarea>
+                                            <textarea name="q_{{ question.id }}" cols="80"
+                                                      rows="5">{{ answers["q_{}".format(question.id)] }}</textarea>
                                         </label>
                                     </div>
                                 </div>
