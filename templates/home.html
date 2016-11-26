@@ -2,7 +2,7 @@
 {% from "_helpers.html" import awesome_button, awesome_glyph %}
 {% block body %}
     <div class="container">
-        <div class="row">
+        <div class="row content">
             <div class="col-md-12">
                 <form class="form-horizontal" role="form" method="post" action="{{ url_for('save') }}">
                     {% for question in questions %}
@@ -75,7 +75,7 @@
                                 </div>
                             {% elif question.kind == 'tree' %}
                                 <div class="col-sm-10">
-                                    <div class="tree well" id="tree_{{ question.id }}">
+                                    <div class="tree" id="tree_{{ question.id }}">
                                         <ul>
                                             {%- for item in question.choices.items() recursive %}
                                                 <li {{ 'style=display:none' if loop.depth > 1 }}>
@@ -111,7 +111,7 @@
                                 </div>
                             {% elif question.kind == 'checktree' %}
                                 <div class="col-sm-10">
-                                    <div class="tree well" id="tree_{{ question.id }}">
+                                    <div class="tree" id="tree_{{ question.id }}">
                                         <ul>
                                             {%- for item in question.choices.items() recursive %}
                                                 <li {{ 'style=display:none' if loop.depth > 1 }}>
