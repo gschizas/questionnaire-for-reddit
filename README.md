@@ -1,6 +1,6 @@
-#Questionnaire For Reddit
+# Questionnaire For Reddit
 
-##Requirements
+## Requirements
 
 In order to test this you will need:
 
@@ -19,9 +19,9 @@ In order to test this you will need:
   * **psycopg2**: I only use pg8000, but SQLAlchemy asks for this, too
   * **flask_sqlalchemy**: A way to connect Flask with SQLAlchemy.
    
-##Setup
+## Setup
 
-###Reddit application 
+### Reddit application 
 Before you start testing, you need to create a reddit application.
 
 1. Head over to [reddit app preferences](https://www.reddit.com/prefs/apps) and click on the "are you a developer? create an app..." (or "create another app...") button.
@@ -81,24 +81,24 @@ or, for Linux
 ```bash
 #!/bin/sh
 # The script sets environment variables helpful for PostgreSQL
-export PATH=$PATH:`pwd`/bin
-export PGDATA=`pwd`/data
+export PATH=$PATH:$(pwd)/bin
+export PGDATA=$(pwd)/data
 export PGDATABASE=postgres
 export PGUSER=postgres
 export PGPORT=5432
-export PGLOCALEDIR=`pwd`/share/locale
+export PGLOCALEDIR=$(pwd)/share/locale
 echo $PATH
 echo $PGDATA
 # The line below is only needed the first time you run this
 if [ ! -d "$PGDATA" ]; then
-    `pwd`/bin/initdb -U postgres -A trust
+    $(pwd)/bin/initdb -U postgres -A trust
 fi
-`pwd`/bin/pg_ctl -D `pwd`/data -l logfile start
+$(pwd)/bin/pg_ctl -D $(pwd)/data -l logfile start
 read -p "Press [Enter] to stop server." key
-`pwd`/bin/pg_ctl -D `pwd`/data stop
+$(pwd)/bin/pg_ctl -D $(pwd)/data stop
 ```
 
-##Environment variables:
+## Environment variables:
 
 When developing, you need to set up the following environment variables (either at system level, or set them up in a batch file).
 
