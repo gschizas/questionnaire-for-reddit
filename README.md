@@ -58,7 +58,7 @@ If/when you deploy to heroku, the database will be created from heroku itself.
 If you have chosen to download the raw binaries (Windows or Linux), you should also run the following batch file 
 (just put it on the folder you've unzipped the binaries)
 
-```commandline
+```cmd
 @ECHO OFF
 REM The script sets environment variables helpful for PostgreSQL
 SET PATH="%~dp0\bin";%PATH%
