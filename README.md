@@ -39,17 +39,17 @@ That's it. I probably made it sound harder than it is.
 
 Here's the process in screenshots:
 
-Go to reddit app preferences (step 1 above):
-[![Go to prefs/apps page]](static/images/setup_step1.png)
+Go to reddit app preferences (step 1 above):  
+![Go to prefs/apps page](static/images/setup_step1.png)
 
-Fill in the values (step 1.1 through 1.5 above)
-[![Create an application]](static/images/setup_step2.png)
+Fill in the values (step 1.1 through 1.5 above):  
+![Create an application](static/images/setup_step2.png)
 
-After pressing the "create app button" (step 1.6 above)
-[![Application done]](static/images/setup_step3.png)
+After pressing the "create app button" (step 1.6 above):  
+![Application done](static/images/setup_step3.png)
 
-Note the client id (yellow) and the client secret (orange) (step 2 above)
-[![Client ID and Client Secret]](static/images/setup_step4.png)
+Note the client id (yellow) and the client secret (orange) (step 2 above):  
+![Client ID and Client Secret](static/images/setup_step4.png)
 
 ###Database
 Ok, now you just need to create a new database to record any answers. This will only be for development, of course. 
