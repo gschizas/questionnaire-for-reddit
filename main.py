@@ -172,6 +172,16 @@ def index():
         # return render_template('index.html')
 
 
+@app.route('/start')
+def start_page():
+    pass
+
+
+@app.route('/about')
+def about_page():
+    pass
+
+
 @app.route('/home')
 def home():
     if 'me' not in session:
