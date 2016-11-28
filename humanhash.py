@@ -67,7 +67,7 @@ class HumanHasher(object):
         """
 
         # Gets a list of byte values between 0-255.
-        buff = map(lambda x: int(x, 16), map(''.join, zip(hexdigest[::2], hexdigest[1::2])))
+        buff = [int(x,16) for x in map(''.join, zip(hexdigest[::2], hexdigest[1::2]))]
         # Compress an arbitrary number of buff to `words`.
         compressed = compress(buff, words)
         # Map the compressed byte values through the word list.
@@ -85,7 +85,7 @@ class HumanHasher(object):
         return self.humanize(digest, **params), digest
 
 
-def compress(bytes, target):
+def compress(buffer, target):
     """
     Compress a list of byte values to a fixed target length.
 
@@ -102,16 +102,16 @@ def compress(bytes, target):
         ValueError: Fewer input buff than requested output
     """
 
-    length = len(bytes)
+    length = len(buffer)
     if target > length:
         raise ValueError("Fewer input buff than requested output")
 
     # Split `buff` into `target` segments.
     seg_size = length // target
-    segments = [bytes[i * seg_size:(i + 1) * seg_size]
+    segments = [buffer[i * seg_size:(i + 1) * seg_size]
                 for i in range(target)]
     # Catch any left-over buff in the last segment.
-    segments[-1].extend(bytes[target * seg_size:])
+    segments[-1].extend(buffer[target * seg_size:])
 
     # Use a simple XOR checksum-like function for compression.
     checksum = lambda buff: reduce(operator.xor, buff, 0)
