@@ -223,12 +223,29 @@ def home():
     if vote is not None:
         answers = {a.code: a.answer_value for a in vote.answers}
 
-    return render_template('home.html', questions=questions, answers=answers)
+    return render_template('home.html',
+                           questions=questions,
+                           answers=answers,
+                           recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
 
 
 @app.route('/done', methods=('POST',))
 def save():
     with app.app_context():
+        if 'RECAPTCHA_SECRET' in os.environ:
+            recaptcha_secret = os.environ['RECAPTCHA_SECRET']
+            recaptcha_response = request.form['g-recaptcha-response']
+            remote_ip = request.remote_addr
+            verification = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                data=dict(
+                    secret=recaptcha_secret,
+                    response=recaptcha_response,
+                    remoteip=remote_ip
+                )).json()
+            if not verification['success']:
+                return make_response(redirect(url_for('index')))
+
         v = model.Vote.query.filter_by(userid=session['me']['id']).first()
         if v is None:
             v = model.Vote()

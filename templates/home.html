@@ -1,5 +1,8 @@
 {% extends "_main.html" %}
 {% from "_helpers.html" import awesome_button, awesome_glyph %}
+{% block header %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
 {% block body %}
     <div class="container">
         <div class="row content">
@@ -190,6 +193,9 @@
                             {% endif %}
                         </div>
                     {% endfor %}
+                    {% if recaptcha_site_key %}
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                    {% endif %}
                     <input type="submit" name="cmd_save" class="form-control btn btn-success"
                            value="{{ _('Submit') }}"/>
                 </form>
