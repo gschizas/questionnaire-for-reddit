@@ -219,11 +219,22 @@ def home():
         questions_list = questionnaire_data['data']['content_md']
     questions = list(yaml.round_trip_load_all(questions_list))
     question_id = 1
+    config = {}
+    config_questions = [q for q in questions if q['kind'] == 'config']
+    for cq in config_questions:
+        config.update(cq['config'])
+    questions = [q for q in questions if q['kind'] != 'config']
+
     for question in questions:
-        if question['kind'] == 'header':
+        if question['kind'] in ('header', 'config'):
             continue
         question['id'] = question_id
         question_id += 1
+
+    if 'account_older_than' in config:
+        created_date = datetime.datetime.fromtimestamp(session['me']['created_utc'])
+        if created_date > config['account_older_than']:
+            return make_response('Your account is too new')
 
     answers = {}
     vote = model.Vote.query.filter_by(userid=session['me']['id']).first()
