@@ -137,8 +137,7 @@ def get_me_serializable(r):
 
 def make_authorize_url(r):
     scope = ['identity']
-    authorize_url = r.get_authorize_url('RedditModHelper', scope, True)
-    print(authorize_url)
+    authorize_url = r.get_authorize_url('RedditModHelper', scope, False)
     return authorize_url
 
 
