@@ -7,8 +7,10 @@ import os
 import pathlib
 import urllib.parse
 import urllib.request
+import uuid
 
 import praw
+import prawcore
 import requests
 import ruamel.yaml as yaml
 from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort, g
@@ -121,60 +123,43 @@ def dropdown(table_name):
 
 
 def reddit_agent():
-    r = praw.Reddit(user_agent=USER_AGENT)
-    r.config.decode_html_entities = True
-    r.config.log_requests = 2
-
-    client_id = os.getenv('REDDIT_OAUTH_CLIENT_ID')
-    client_secret = os.getenv('REDDIT_OAUTH_CLIENT_SECRET')
-    redirect_url = urllib.parse.urljoin(os.getenv('REDDIT_OAUTH_REDIRECT_URL'), url_for('authorize_callback'))
-    r.set_oauth_app_info(client_id, client_secret, redirect_url)
-    if 'access_info' in session:
-        access_information = yaml.load(session['access_info'])
-        if 'last_used' in session:
-            last_used = session['last_used']
-            minutes = (datetime.datetime.now() - last_used).total_seconds() / 60
-        else:
-            minutes = 365 * 24 * 60
-
-        if minutes > 60:
-            new_access_info = r.refresh_access_information(access_information['refresh_token'])
-            session['access_info'] = yaml.dump(new_access_info)
-        else:
-            r.set_access_credentials(**access_information)
-        session['me'] = get_me_serializable(r)
+    redirect_uri = urllib.parse.urljoin(os.getenv('REDDIT_OAUTH_REDIRECT_URL'), url_for('authorize_callback'))
+    r = praw.Reddit(
+        client_id=os.getenv('REDDIT_OAUTH_CLIENT_ID'),
+        client_secret=os.getenv('REDDIT_OAUTH_CLIENT_SECRET'),
+        redirect_uri=redirect_uri,
+        user_agent=USER_AGENT)
     return r
 
 
 def get_me_serializable(r):
-    me = r.get_me()
+    me = r.user.me()
     me_serializable = dict(comment_karma=me.comment_karma, created=me.created, created_utc=me.created_utc,
                            gold_creddits=me.gold_creddits, gold_expiration=me.gold_expiration,
-                           has_fetched=me.has_fetched,
                            has_verified_email=me.has_verified_email, hide_from_robots=me.hide_from_robots, id=me.id,
-                           inbox_count=me.inbox_count, is_gold=me.is_gold, is_mod=me.is_mod, json_dict=me.json_dict,
+                           inbox_count=me.inbox_count, is_gold=me.is_gold, is_mod=me.is_mod,
                            link_karma=me.link_karma, name=me.name, over_18=me.over_18)
     return me_serializable
 
 
 def make_authorize_url(r):
     scope = ['identity']
-    authorize_url = r.get_authorize_url('RedditModHelper', scope, False)
+    session['state'] = str(uuid.uuid4())
+    authorize_url = r.auth.url(scope, session['state'], 'temporary')
     return authorize_url
 
 
 @app.route('/authorize_callback')
 def authorize_callback():
     state = request.args.get('state')
+    if state != session.get('state'):
+        return make_response(redirect(url_for('index')))
     code = request.args.get('code')
     r = reddit_agent()
     try:
-        access_information = r.get_access_information(code)
-    except praw.errors.OAuthInvalidGrant as ex:
-        print(ex)
-        return make_response(redirect(make_authorize_url(r)))
-    session['access_info'] = yaml.dump(access_information)
-    session['last_used'] = datetime.datetime.now()
+        r.auth.authorize(code)
+    except prawcore.exceptions.OAuthException:
+        return make_response(redirect(url_for('index')))
     session['me'] = get_me_serializable(r)
     return make_response(redirect(url_for('home')))
 
@@ -185,12 +170,8 @@ def index():
     if first_run:
         session.clear()
         first_run = False
-    if 'access_info' in session:
-        return make_response(redirect(url_for('home')))
-    else:
-        r = reddit_agent()
-        return make_response(redirect(make_authorize_url(r)))
-        # return render_template('index.html')
+    r = reddit_agent()
+    return make_response(redirect(make_authorize_url(r)))
 
 
 @app.route('/start')
@@ -200,7 +181,7 @@ def start_page():
 
 @app.route('/about')
 def about_page():
-    pass
+    return "Hello"
 
 
 @app.route('/home')
