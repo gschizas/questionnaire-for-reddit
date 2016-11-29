@@ -17,7 +17,7 @@ from flask_babel import Babel
 
 import model
 
-USER_AGENT = 'Questionnaire for Reddit by /u/gschizas version 0.2'
+USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v0.3 (by /u/gschizas)'
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
 app = Flask(__name__)
