@@ -11,8 +11,9 @@ import urllib.request
 import praw
 import requests
 import ruamel.yaml as yaml
-from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort
+from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort, g
 from flask import Response
+from flask_babel import Babel
 
 import model
 
@@ -22,6 +23,7 @@ EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+babel = Babel(app)
 logging.basicConfig(level=logging.DEBUG)
 first_run = False
 
@@ -91,6 +93,25 @@ def emojiflag(flag_letters):
 @app.template_filter('quote_list')
 def surround_by_quote(a_list):
     return ['"{}"'.format(an_element) for an_element in a_list]
+
+
+@babel.localeselector
+def get_locale():
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.locale
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(['en', 'el', 'de'])
+
+
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
 
 
 @app.route('/_dropdown/<table_name>', methods=('GET', 'POST'))
