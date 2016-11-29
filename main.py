@@ -23,6 +23,7 @@ EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 babel = Babel(app)
 logging.basicConfig(level=logging.DEBUG)
 first_run = False
