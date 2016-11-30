@@ -29,3 +29,9 @@ class Answer(db.Model):
     answer_value = db.Column(db.String)
     vote_id = db.Column(db.Integer, db.ForeignKey('Votes.vote_id'))
     vote = db.relationship('Vote', backref='answers')
+
+
+class Receipt(db.Model):
+    __tablename__ = 'Receipts'
+
+    user_id = db.Column(db.String, primary_key=True)

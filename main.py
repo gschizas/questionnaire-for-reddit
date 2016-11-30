@@ -219,6 +219,7 @@ def home():
             return make_response('Your account is too new')
 
     answers = {}
+
     vote = model.Vote.query.filter_by(userid=session['me']['id']).first()
     if vote is not None:
         answers = {a.code: a.answer_value for a in vote.answers}
