@@ -176,7 +176,7 @@ def index():
 
 @app.route('/about')
 def about_page():
-    return "Hello"
+    return render_template('about.html')
 
 
 @app.route('/home')
