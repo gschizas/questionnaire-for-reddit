@@ -1,4 +1,4 @@
-# Greek translations for PROJECT.
+# Greek translations for questionnaire for reddit.
 # Copyright (C) 2016 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-11-28 14:10+0200\n"
+"POT-Creation-Date: 2016-12-01 11:25+0200\n"
 "PO-Revision-Date: 2016-11-28 14:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -18,7 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: templates/home.html:194
+#: templates/about.html:4
+msgid "About this application"
+msgstr "Σχετικά με την εφαρμογή"
+
+#: templates/home.html:200
 msgid "Submit"
 msgstr "Αποστολή"
 
