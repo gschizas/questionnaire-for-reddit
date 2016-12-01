@@ -17,6 +17,7 @@ import requests
 import ruamel.yaml as yaml
 from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
+from flask_cache import Cache
 
 import model
 
@@ -24,10 +25,13 @@ USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v0.4 (by /u/gschizas)'
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
 app = Flask(__name__)
+babel = Babel(app)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-babel = Babel(app)
+
 logging.basicConfig(level=logging.DEBUG)
 first_run = False
 
@@ -184,18 +188,7 @@ def about_page():
 def home():
     if 'me' not in session:
         return make_response(redirect(url_for('index')))
-    url = os.getenv('QUESTIONNAIRE_URL')
-    if url.startswith('file://'):
-        url_obj = urllib.parse.urlparse(url)
-        file_path = urllib.request.url2pathname(url_obj.path)
-        questions_list = pathlib.Path(file_path).read_text(encoding='utf8')
-    else:
-        questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
-        if 'data' not in questionnaire_data:
-            print(questionnaire_data)
-            abort(503)
-        questions_list = questionnaire_data['data']['content_md']
-    questions = list(yaml.round_trip_load_all(questions_list))
+    questions = read_questionnaire()
     question_id = 1
     config = {}
     config_questions = [q for q in questions if q['kind'] == 'config']
@@ -236,6 +229,23 @@ def home():
         questions=questions,
         answers=answers,
         recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
+
+
+@cache.cached(timeout=300)
+def read_questionnaire():
+    url = os.getenv('QUESTIONNAIRE_URL')
+    if url.startswith('file://'):
+        url_obj = urllib.parse.urlparse(url)
+        file_path = urllib.request.url2pathname(url_obj.path)
+        questions_list = pathlib.Path(file_path).read_text(encoding='utf8')
+    else:
+        questionnaire_data = requests.get(url, params=dict(raw_json=1), headers={'User-Agent': USER_AGENT}).json()
+        if 'data' not in questionnaire_data:
+            print(questionnaire_data)
+            abort(503)
+        questions_list = questionnaire_data['data']['content_md']
+    questions = list(yaml.round_trip_load_all(questions_list))
+    return questions
 
 
 @app.route('/restore_cookie', methods=('GET', 'POST'))
