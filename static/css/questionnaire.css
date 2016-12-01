@@ -9,7 +9,7 @@ body {
     padding-bottom: 16px;
 }
 
-:root .container>.infoBoxList>.shareInfoBox {
+:root .container > .infoBoxList > .shareInfoBox {
     display: none !important;
 }
 
@@ -19,96 +19,78 @@ body {
     padding: 10px 20px;
 }
 
-.tree {
-    min-height: 20px;
-    margin-bottom: 20px;
-    background-color: #fbfbfb;
-    border: 1px solid #CBCBCB;
-    border-bottom: none;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05)
+.tree, .tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.tree ul {
+    margin-left: 1em;
+    position: relative
+}
+
+.tree ul ul {
+    margin-left: .5em
+}
+
+.tree ul:before {
+    content: "";
+    display: block;
+    width: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-left: 1px solid
 }
 
 .tree li {
-    list-style-type: none;
     margin: 0;
-    width: 100%;
+    padding: 0 1em;
+    line-height: 2em;
+    color: #369;
+    font-weight: 700;
+    position: relative
 }
 
-.tree li span {
-    border-bottom: 1px solid #CBCBCB;
-    width: 100%;
-    display: flex;
-    padding: 10px 20px;
-}
-
-.tree li:not(.parent_li) span {
-    background-color: #f2f2f2;
-    padding-left: 40px;
-}
-
-.tree li span label {
-    flex: 1;
-    cursor: pointer;
-}
-
-.tree ul {
-    margin-bottom: 0;
-}
-
-.tree ul {
-    padding-left: 0;
-}
-
-
-/*
-.tree li::before, .tree li::after {
-    content: '';
-    left: -20px;
+.tree ul li:before {
+    content: "";
+    display: block;
+    width: 10px;
+    height: 0;
+    border-top: 1px solid;
+    margin-top: -1px;
     position: absolute;
-    right: auto
+    top: 1em;
+    left: 0
 }
 
-.tree li::before {
-    border-left: 1px solid #999;
-    bottom: 50px;
-    height: 100%;
-    top: 0;
-    width: 1px
+.tree ul li:last-child:before {
+    background: #fff;
+    height: auto;
+    top: 1em;
+    bottom: 0
 }
 
-.tree li::after {
-    border-top: 1px solid #999;
-    height: 20px;
-    top: 25px;
-    width: 25px
+.indicator {
+    margin-right: 5px;
 }
 
-.tree li span {
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border: 1px solid #999;
-    border-radius: 5px;
-    display: inline-block;
-    padding: 3px 8px;
-    text-decoration: none
+.tree li a {
+    text-decoration: none;
+    color: #369;
 }
 
-.tree li.parent_li > span {
-    cursor: pointer
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color: #369;
+    border: none;
+    background: transparent;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    outline: 0;
 }
-
-.tree > ul > li::before, .tree > ul > li::after {
-    border: 0
-}
-
-.tree li:last-child::before {
-    height: 30px
-}*/
 
 .tree li.parent_li > span:hover {
     background: #e0e0e0;
