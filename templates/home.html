@@ -74,14 +74,13 @@
                                             <li {{ 'style=display:none' if loop.depth > 1 }}>
                                                 {%- if item[1].choices -%}
                                                     <span>
-                                                            <input type="radio"
-                                                                   name="q_{{ question.id }}"
-                                                                    {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
-                                                                   value="{{ item[0] }}"/>&nbsp;
-                                                            <label for="q_{{ question.id }}_{{ item[0] }}">
-                                                                <i class="icon-folder-open"></i>{{ item[1].title }}
-                                                            </label>
-                                                        </span>
+                                                        <input type="radio" name="q_{{ question.id }}"
+                                                                {{- " checked" if answers["q_{}".format(question.id)]==item[0] -}}
+                                                               value="{{ item[0] }}"/>&nbsp;
+                                                        <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                            <i class="glyphicon glyphicon-plus"></i>{{ item[1].title }}
+                                                        </label>
+                                                    </span>
                                                     <ul>{{ loop(item[1].choices.items()) }}</ul>
                                                 {%- else -%}
                                                     <span>
@@ -90,7 +89,7 @@
                                                                     {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
                                                                    value="{{ item[0] }}"/>&nbsp;
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
-                                                                <i class="icon-leaf"></i>{{ item[1].title }}
+                                                                <i class="glyphicon"></i>{{ item[1].title }}
                                                             </label>
                                                         {%- if  item[1].is_text %}
                                                             <input type="text" name="q_{{ question.id }}_text"/>
@@ -108,25 +107,25 @@
                                             <li {{ 'style=display:none' if loop.depth > 1 }}>
                                                 {%- if item[1].choices -%}
                                                     <span>
-                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
-                                                                <i class="icon-folder-open"></i>{{ item[1].title }}
-                                                            </label>
-                                                        </span>
+                                                        <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                            <i class="glyphicon glyphicon-plus"></i>{{ item[1].title }}
+                                                        </label>
+                                                    </span>
                                                     <ul>{{ loop(item[1].choices.items()) }}</ul>
                                                 {%- else -%}
                                                     <span>
-                                                            <input type="checkbox"
+                                                        <input type="checkbox"
                                                                    name="q_{{ question.id }}_{{ item[0] }}"
                                                                    id="q_{{ question.id }}_{{ item[0] }}"
                                                                     {{ "checked" if answers["q_{}_{}".format(question.id, item[0])]=="YES" }}
                                                                    value="YES"/>&nbsp;
-                                                            <label for="q_{{ question.id }}_{{ item[0] }}">
+                                                        <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
                                                             </label>
                                                         {%- if  item[1].is_text %}
                                                             <input type="text" name="q_{{ question.id }}_text"/>
                                                         {%- endif %}
-                                                        </span>
+                                                    </span>
                                                 {%- endif %}
                                             </li>
                                         {%- endfor %}
@@ -192,10 +191,10 @@
                 var children = $(this).parent('li.parent_li').find(' > ul > li');
                 if (children.is(":visible")) {
                     children.hide('fast');
-                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+                    $(this).attr('title', 'Expand this branch').find(' > label > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
                 } else {
                     children.show('fast');
-                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+                    $(this).attr('title', 'Collapse this branch').find(' > label > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
                 }
                 e.stopPropagation();
             });
