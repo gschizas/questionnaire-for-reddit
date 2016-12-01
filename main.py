@@ -174,11 +174,6 @@ def index():
     return make_response(redirect(make_authorize_url(r)))
 
 
-@app.route('/start')
-def start_page():
-    pass
-
-
 @app.route('/about')
 def about_page():
     return "Hello"
