@@ -1,7 +1,7 @@
 {% extends "_main.html" %}
 {% from "_helpers.html" import awesome_button, awesome_glyph %}
 {% block header %}
-<script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 {% endblock %}
 {% block body %}
     <div class="container">
@@ -9,81 +9,71 @@
             <div class="col-md-12">
                 <form class="form-horizontal" role="form" method="post" action="{{ url_for('save') }}">
                     {% for question in questions %}
-                        {% if question.kind != 'header' %}
-                            {{ question.id }}. {{ question.title }}
-                        {% endif %}
-                        <div class="form-group">
-                            <div class="col-sm-2">
-                                <label class="control-label">{{ ch_title }}</label>
-                            </div>
+                        <div class="form-group col-sm-12">
+                            {% if question.kind != 'header' %}
+                                <h4>{{ question.id }}. {{ question.title }}</h4>
+                            {% endif %}
                             {% if question.kind == 'header' %}
-                                <div class="col-sm-10">
-                                    {% if question.level|default(1) == 1 %}
-                                        <h3>{{ question.title }}</h3>
-                                    {% elif question.level == 2 %}
-                                        <h4>{{ question.title }}</h4>
-                                    {% endif %}
-                                    <div>{{ question.text }}</div>
-                                </div>
+                                {% if question.level|default(1) == 1 %}
+                                    <h3>{{ question.title }}</h3>
+                                {% elif question.level == 2 %}
+                                    <h4>{{ question.title }}</h4>
+                                {% endif %}
+                                <div>{{ question.text }}</div>
                             {% elif question.kind == 'radio' %}
-                                <div class="col-sm-10">
-                                    <div class="radio">
-                                        {% if question.text %}
-                                            <div>{{ question.text }}</div>
-                                        {% endif %}
-                                        {% for ch_key, ch_title in question.choices.items() %}
-                                            <label class="radio">
-                                                <input type="radio"
-                                                       name="q_{{ question.id }}"
-                                                        {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
-                                                       value="{{ ch_key }}">{{ ch_title }}
-                                            </label>
-                                        {% endfor %}
-                                        {%- if question.other %}
-                                            <label class="radio" for="q_{{ question.id }}_text">
-                                                <input type="radio"
-                                                       name="q_{{ question.id }}"
-                                                        {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
-                                                       value="{{ ch_key }}">
-                                                {{ question.other }}
-                                                <input type="text" name="q_{{ question.id }}_text"
-                                                       value="{{ answers["q_{}_text".format(question.id)] }}"/>
-                                            </label>
-                                        {%- endif %}
-                                    </div>
+                                <div class="radio">
+                                    {% if question.text %}
+                                        <p>{{ question.text }}</p>
+                                    {% endif %}
+                                    {% for ch_key, ch_title in question.choices.items() %}
+                                        <label class="radio">
+                                            <input type="radio"
+                                                   name="q_{{ question.id }}"
+                                                    {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
+                                                   value="{{ ch_key }}">{{ ch_title }}
+                                        </label>
+                                    {% endfor %}
+                                    {%- if question.other %}
+                                        <label class="radio" for="q_{{ question.id }}_text">
+                                            <input type="radio"
+                                                   name="q_{{ question.id }}"
+                                                    {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
+                                                   value="{{ ch_key }}">
+                                            {{ question.other }}
+                                            <input type="text" name="q_{{ question.id }}_text"
+                                                   value="{{ answers["q_{}_text".format(question.id)] }}"/>
+                                        </label>
+                                    {%- endif %}
                                 </div>
                             {% elif question.kind == 'checkbox' %}
-                                <div class="col-sm-10">
-                                    <div class="radio">
-                                        {% if question.text %}
-                                            <div>{{ question.text }}</div>
-                                        {% endif %}
-                                        {% for ch_key, ch_title in question.choices.items() %}
-                                            <label class="checkbox">
-                                                <input type="checkbox"
-                                                       name="q_{{ question.id }}_{{ ch_key }}"
-                                                        {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="YES" }}
-                                                       value="YES">{{ ch_title }}
-                                            </label>
-                                        {% endfor %}
-                                        {%- if question.other %}
-                                            <label class="radio" for="q_{{ question.id }}_text">
-                                                {{ question.other }}
-                                                <input type="text"
-                                                       name="q_{{ question.id }}_text"
-                                                       value="{{ answers["q_{}_text".format(question.id)] }}"/>
-                                            </label>
-                                        {%- endif %}
-                                    </div>
+                                <div class="radio">
+                                    {% if question.text %}
+                                        <div>{{ question.text }}</div>
+                                    {% endif %}
+                                    {% for ch_key, ch_title in question.choices.items() %}
+                                        <label class="checkbox">
+                                            <input type="checkbox"
+                                                   name="q_{{ question.id }}_{{ ch_key }}"
+                                                    {{ "checked" if answers["q_{}_{}".format(question.id, ch_key)]=="YES" }}
+                                                   value="YES">{{ ch_title }}
+                                        </label>
+                                    {% endfor %}
+                                    {%- if question.other %}
+                                        <label class="radio" for="q_{{ question.id }}_text">
+                                            {{ question.other }}
+                                            <input type="text"
+                                                   name="q_{{ question.id }}_text"
+                                                   value="{{ answers["q_{}_text".format(question.id)] }}"/>
+                                        </label>
+                                    {%- endif %}
                                 </div>
                             {% elif question.kind == 'tree' %}
-                                <div class="col-sm-10">
-                                    <div class="tree" id="tree_{{ question.id }}">
-                                        <ul>
-                                            {%- for item in question.choices.items() recursive %}
-                                                <li {{ 'style=display:none' if loop.depth > 1 }}>
-                                                    {%- if item[1].choices -%}
-                                                        <span>
+                                <div class="tree" id="tree_{{ question.id }}">
+                                    <ul>
+                                        {%- for item in question.choices.items() recursive %}
+                                            <li {{ 'style=display:none' if loop.depth > 1 }}>
+                                                {%- if item[1].choices -%}
+                                                    <span>
                                                             <input type="radio"
                                                                    name="q_{{ question.id }}"
                                                                     {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
@@ -92,9 +82,9 @@
                                                                 <i class="icon-folder-open"></i>{{ item[1].title }}
                                                             </label>
                                                         </span>
-                                                        <ul>{{ loop(item[1].choices.items()) }}</ul>
-                                                    {%- else -%}
-                                                        <span>
+                                                    <ul>{{ loop(item[1].choices.items()) }}</ul>
+                                                {%- else -%}
+                                                    <span>
                                                             <input type="radio" name="q_{{ question.id }}"
                                                                    id="q_{{ question.id }}_{{ item[0] }}"
                                                                     {{ "checked" if answers["q_{}".format(question.id)]==item[0] }}
@@ -102,31 +92,29 @@
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
                                                             </label>
-                                                            {%- if  item[1].is_text %}
-                                                                <input type="text" name="q_{{ question.id }}_text"/>
-                                                            {%- endif %}
+                                                        {%- if  item[1].is_text %}
+                                                            <input type="text" name="q_{{ question.id }}_text"/>
+                                                        {%- endif %}
                                                         </span>
-                                                    {%- endif %}
-                                                </li>
-                                            {%- endfor %}
-                                        </ul>
-                                    </div>
+                                                {%- endif %}
+                                            </li>
+                                        {%- endfor %}
+                                    </ul>
                                 </div>
                             {% elif question.kind == 'checktree' %}
-                                <div class="col-sm-10">
-                                    <div class="tree" id="tree_{{ question.id }}">
-                                        <ul>
-                                            {%- for item in question.choices.items() recursive %}
-                                                <li {{ 'style=display:none' if loop.depth > 1 }}>
-                                                    {%- if item[1].choices -%}
-                                                        <span>
+                                <div class="tree" id="tree_{{ question.id }}">
+                                    <ul>
+                                        {%- for item in question.choices.items() recursive %}
+                                            <li {{ 'style=display:none' if loop.depth > 1 }}>
+                                                {%- if item[1].choices -%}
+                                                    <span>
                                                              <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-folder-open"></i>{{ item[1].title }}
                                                             </label>
                                                         </span>
-                                                        <ul>{{ loop(item[1].choices.items()) }}</ul>
-                                                    {%- else -%}
-                                                        <span>
+                                                    <ul>{{ loop(item[1].choices.items()) }}</ul>
+                                                {%- else -%}
+                                                    <span>
                                                             <input type="checkbox"
                                                                    name="q_{{ question.id }}_{{ item[0] }}"
                                                                    id="q_{{ question.id }}_{{ item[0] }}"
@@ -135,66 +123,59 @@
                                                             <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
                                                             </label>
-                                                            {%- if  item[1].is_text %}
-                                                                <input type="text" name="q_{{ question.id }}_text"/>
-                                                            {%- endif %}
+                                                        {%- if  item[1].is_text %}
+                                                            <input type="text" name="q_{{ question.id }}_text"/>
+                                                        {%- endif %}
                                                         </span>
-                                                    {%- endif %}
-                                                </li>
-                                            {%- endfor %}
-                                        </ul>
-                                    </div>
+                                                {%- endif %}
+                                            </li>
+                                        {%- endfor %}
+                                    </ul>
                                 </div>
                             {% elif question.kind=='text' %}
-                                <div class="col-sm-10">
-                                    <div class="text">
-                                        <label class="input">
-                                            <input type="text" name="q_{{ question.id }}"
-                                                   value="{{ answers["q_{}".format(question.id)] }}">
-                                        </label>
-                                    </div>
+                                <div class="text">
+                                    <label class="input">
+                                        <input type="text" name="q_{{ question.id }}"
+                                               value="{{ answers["q_{}".format(question.id)] }}">
+                                    </label>
                                 </div>
                             {% elif question.kind=='textarea' %}
-                                <div class="col-sm-10">
-                                    <div class="text">
-                                        <label>
+                                <div class="text">
+                                    <label>
                                             <textarea name="q_{{ question.id }}" cols="80"
                                                       rows="5">{{ answers["q_{}".format(question.id)] }}</textarea>
-                                        </label>
-                                    </div>
+                                    </label>
                                 </div>
                             {% elif question.kind=="scale-matrix" %}
-                                <div class="col-sm-10">
-                                    <div class="radio">
-                                        {% if question.text %}
-                                            <div>{{ question.text }}</div>
-                                        {% endif %}
+                                <div class="radio">
+                                    {% if question.text %}
+                                        <div>{{ question.text }}</div>
+                                    {% endif %}
 
 
-                                        {% for ch_title in question.lines %}
-                                            <div class="not_hidden">{{ ch_title }}</div>
+                                    {% for ch_title in question.lines %}
+                                        <div class="not_hidden">{{ ch_title }}</div>
 
-                                            <input id="q_{{ question.id }}_{{ loop.index }}" type="text"
-                                                   data-provide="slider"
-                                                   data-slider-ticks='[{{ range(1,6)|join(',')|safe }}]'
-                                                   data-slider-ticks-labels='[{{ question.choices.values()|quote_list|join(',')|safe }}]'
-                                                   data-slider-min="1"
-                                                   data-slider-max="5"
-                                                   data-slider-step="1"
-                                                   data-slider-value="3"
-                                            />
-                                            <br/>
-                                            <br/>
-                                            <br/>
-                                            <br/>
-                                        {% endfor %}
-                                    </div>
+                                        <input id="q_{{ question.id }}_{{ loop.index }}" type="text"
+                                               data-provide="slider"
+                                               data-slider-ticks='[{{ range(1,6)|join(',')|safe }}]'
+                                               data-slider-ticks-labels='[{{ question.choices.values()|quote_list|join(',')|safe }}]'
+                                               data-slider-min="1"
+                                               data-slider-max="5"
+                                               data-slider-step="1"
+                                               data-slider-value="3"
+                                        />
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
                     {% endfor %}
                     {% if recaptcha_site_key %}
-                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                        <div class="col-sm-12 g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
                     {% endif %}
                     <input type="submit" name="cmd_save" class="form-control btn btn-success"
                            value="{{ _('Submit') }}"/>
