@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import binascii
 import collections
 import datetime
+import hashlib
 import logging
 import os
 import pathlib
@@ -13,13 +15,12 @@ import praw
 import prawcore
 import requests
 import ruamel.yaml as yaml
-from flask import Flask, render_template, make_response, request, redirect, url_for, session, abort, g
-from flask import Response
+from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
 
 import model
 
-USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v0.3 (by /u/gschizas)'
+USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v0.4 (by /u/gschizas)'
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
 app = Flask(__name__)
@@ -211,22 +212,48 @@ def home():
     if 'account_older_than' in config:
         created_date = datetime.datetime.fromtimestamp(session['me']['created_utc'])
         if created_date > config['account_older_than']:
-            return make_response('Your account is too new')
+            return Response('Your account is too new', mimetype='text/plain')
 
     answers = {}
 
-    vote = model.Vote.query.filter_by(userid=session['me']['id']).first()
-    if vote is not None:
-        answers = {a.code: a.answer_value for a in vote.answers}
+    receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
+    if receipt is not None:
+        if request.cookies['receipt_id'] is None:
+            return render_template('done.html', nocookie=True)
 
-    return render_template('home.html',
-                           questions=questions,
-                           answers=answers,
-                           recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
+        receipt_id_text = request.cookies['receipt_id']
+        receipt_id_bytes = binascii.unhexlify(receipt_id_text.replace('-', ''))
+        userhash = hashlib.sha256(session['me']['id'].encode('utf8') + receipt_id_bytes).hexdigest()
+
+        vote = model.Vote.query.filter_by(user_hash=userhash).first()
+        if vote is not None:
+            answers = {a.code: a.answer_value for a in vote.answers}
+        else:
+            return render_template('done.html', tamper=True)
+
+    return render_template(
+        'home.html',
+        questions=questions,
+        answers=answers,
+        recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
+
+
+@app.route('/restore_cookie', methods=('GET', 'POST'))
+def restore_cookie():
+    if 'me' not in session:
+        return make_response(redirect(url_for('index')))
+    if request.method == 'GET':
+        return render_template('restore_cookie.html')
+    else:
+        receipt_id = request.form['receipt_id']
+        response = redirect(url_for('home'))
+        response.set_cookie('receipt_id', value=receipt_id, httponly=True)
+        return response
 
 
 @app.route('/done', methods=('POST',))
 def save():
+    response = None
     with app.app_context():
         if 'RECAPTCHA_SECRET' in os.environ:
             recaptcha_secret = os.environ['RECAPTCHA_SECRET']
@@ -242,10 +269,31 @@ def save():
             if not verification['success']:
                 return make_response(redirect(url_for('index')))
 
-        v = model.Vote.query.filter_by(userid=session['me']['id']).first()
+        receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
+        if receipt is not None:
+            if request.cookies['receipt_id'] is None:
+                return render_template('done.html', nocookie=True)
+
+            receipt_id_text = request.cookies['receipt_id']
+            receipt_id_bytes = binascii.unhexlify(receipt_id_text.replace('-', ''))
+            userhash = hashlib.sha256(session['me']['id'].encode('utf8') + receipt_id_bytes).hexdigest()
+            if model.Vote.query.filter_by(user_hash=userhash).count() == 0:
+                return render_template('done.html', tamper=True)
+            response = make_response(render_template('done.html', voted=True, receipt_id=receipt_id_text))
+        else:
+            receipt_id = uuid.uuid4()
+            receipt_id_text = str(receipt_id)
+            userhash = hashlib.sha256(session['me']['id'].encode('utf8') + receipt_id.bytes).hexdigest()
+            response = make_response(render_template('done.html', voted=True, receipt_id=receipt_id_text))
+            response.set_cookie('receipt_id', value=receipt_id_text)
+            rct = model.Receipt()
+            rct.user_id = session['me']['id']
+            model.db.session.add(rct)
+
+        v = model.Vote.query.filter_by(user_hash=userhash).first()
         if v is None:
             v = model.Vote()
-            v.userid = session['me']['id']
+            v.user_hash = userhash
         v.datestamp = datetime.datetime.utcnow()
         model.db.session.add(v)
         # response = 'userid=' + session['me']['id'] + '\n'
@@ -261,7 +309,9 @@ def save():
             a.vote = v
             model.db.session.add(a)
         model.db.session.commit()
-    return Response("Thank you for voting", mimetype='text/plain')
+    if response is None:
+        response = make_response(render_template('done.html'))
+    return response
 
 
 def main():

@@ -1,0 +1,21 @@
+{% extends "_main.html" %}
+{% block body %}
+    <div class="container">
+        {% if voted %}
+            <p>Thank you for voting.</p>
+            <p>Your receipt id is <samp>{{ receipt_id }}</samp>. Please write that down in a safe place, in case you delete your
+                cookies and want to change your answers
+            </p>
+        {% elif nocookie %}
+            <p>You have already voted, but you deleted your cookie.</p>
+            <p>If you have written down your receipt id, <a href="{{ url_for('restore_cookie') }}">you can click here to
+                restore your cookie</a></p>
+        {% elif tamper %}
+            <p>You have already voted, but your receipt id is wrong.</p>
+            <p>If you have written down your receipt id, <a href="{{ url_for('restore_cookie') }}">you can click here to
+                restore your cookie</a></p>
+        {% else %}
+            <p>Something unexpected happened</p>
+        {% endif %}
+    </div>
+{% endblock %}

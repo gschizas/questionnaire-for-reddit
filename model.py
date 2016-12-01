@@ -15,7 +15,7 @@ class Vote(db.Model):
     __tablename__ = 'Votes'
 
     vote_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    userid = db.Column(db.String)
+    user_hash = db.Column(db.String)
     datestamp = db.Column(db.DateTime)
     # survey_id = Column(Integer, ForeignKey('Survey.id'))
     # survey = relationship('Survey', backref='votes')

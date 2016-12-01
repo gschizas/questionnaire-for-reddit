@@ -1,0 +1,13 @@
+{% extends "_main.html" %}
+{% block body %}
+    <div class="container">
+        Restore cookie
+        <form method="post" action="{{ url_for('restore_cookie') }}">
+            <p>Enter your receipt id to restore your cookie</p>
+            <label for="receipt_id">Receipt ID
+                <input type="text" name="receipt_id">
+            </label>
+            <input type="submit" value="{{ _('Submit') }}">
+        </form>
+    </div>
+{% endblock %}
