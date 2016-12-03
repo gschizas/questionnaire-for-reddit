@@ -211,7 +211,7 @@ def home():
 
     receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
     if receipt is not None:
-        if request.cookies['receipt_id'] is None:
+        if 'receipt_id' in request.cookies and request.cookies['receipt_id'] is None:
             return render_template('done.html', nocookie=True)
 
         receipt_id_text = request.cookies['receipt_id']
