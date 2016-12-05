@@ -1,0 +1,42 @@
+{
+	"name": "Questionnaire for Reddit",
+	"description": "Create surveys and questionnaires, backed by Reddit login.",
+	"keywords": [
+		"reddit",
+		"survey",
+		"questionnaire"
+	],
+	"repository": "https://github.com/gschizas/questionnaire-for-reddit",
+	"env": {
+		"REDDIT_OAUTH_CLIENT_ID": {
+			"description": "Fill that in from the https://www.reddit.com/prefs/apps page",
+			"required": true
+		},
+		"REDDIT_OAUTH_CLIENT_SECRET": {
+			"description": "Fill that in from the https://www.reddit.com/prefs/apps page",
+			"required": true
+		},
+		"REDDIT_OAUTH_REDIRECT_URL": {
+			"description": "While you're doing development, this should be http://localhost:5000/authorize_callback. When deployed, use the server URL and 'authorize_callback'",
+			"required": true
+		},
+		"DATABASE_URL": {
+			"description": "If you have a local database, this should be something like `postgresql+pg8000://postgres@localhost/questionnaire`",
+			"required": true
+		},
+		"QUESTIONNAIRE_URL": {
+			"description": "You can use your official one (for example https://www.reddit.com/r/your_subreddit/wiki/questionnaire.json) or a local file (file:///somewhere/on/your/disk/questionnaire.yml)",
+			"required": true
+		},
+		"FLASK_SECRET_KEY": {
+			"description": "Any random string (I use `python -c 'import base64,os;print(base64.b64encode(os.urandom(48)).decode())'`",
+			"generator": "secret",
+			"required": true
+		}
+	},
+	"addons": [
+		{
+			"plan": "heroku-postgresql"
+		}
+	]
+}

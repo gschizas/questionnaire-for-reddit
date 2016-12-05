@@ -1,5 +1,7 @@
 # Questionnaire For Reddit
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Requirements
 
 In order to test this you will need:
