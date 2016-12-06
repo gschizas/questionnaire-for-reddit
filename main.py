@@ -8,6 +8,7 @@ import logging
 import os
 import pathlib
 import re
+import sys
 import urllib.parse
 import urllib.request
 import uuid
@@ -133,6 +134,7 @@ def dropdown(table_name):
 
 @app.errorhandler(500)
 def page_error(e):
+    print(e, file=sys.stderr)
     return render_template('error.html'), 500
 
 
