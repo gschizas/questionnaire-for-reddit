@@ -270,6 +270,10 @@ def restore_cookie():
         return response
 
 
+def questions_sort(x):
+    return int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
+
+
 @app.route('/done', methods=('POST',))
 def save():
     response = None
@@ -325,7 +329,6 @@ def save():
         v.datestamp = datetime.datetime.utcnow()
         model.db.session.add(v)
         # response = 'userid=' + session['me']['id'] + '\n'
-        questions_sort = lambda x: int(x[0][2:]) if x[0][0:1] == 'q_' else '__' + x[0]
         for field, value in sorted(request.form.items(), key=questions_sort):
             if value is None or value == '':
                 continue
