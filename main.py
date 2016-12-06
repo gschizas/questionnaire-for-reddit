@@ -311,10 +311,11 @@ def save():
         for field, value in sorted(request.form.items(), key=questions_sort):
             if value is None or value == '':
                 continue
-            a = model.Answer.query.filter_by(code=field).first()
+            a = model.Answer.query.filter_by(code=field, vote=v).first()
             if a is None:
                 a = model.Answer()
                 a.code = field
+                a.vote = v
             a.answer_value = value
             a.vote = v
             model.db.session.add(a)
