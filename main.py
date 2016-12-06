@@ -82,7 +82,7 @@ def inject_sysinfo():
 
 @app.context_processor
 def inject_user():
-    return dict(user=session['me']) if 'me' in session else None
+    return dict(user=session['me']) if 'me' in session else dict(user=None)
 
 
 @app.template_filter('maxlength')
