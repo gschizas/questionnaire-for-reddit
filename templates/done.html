@@ -9,10 +9,10 @@
             </p>
             {% if user_is_tester %}
                 <pre>
-            {% for answer_code, answer_value in request.form.items() %}
-                {{ answer_code }} = {{ answer_value }}
-            {% endfor %}
-            </pre>
+            {%- for answer_code, answer_value in request.form.items() -%}
+                {{- answer_code }} = {{ answer_value -}}{{- "\n" -}}
+            {%- endfor -%}
+                </pre>
             {% endif %}
         {% elif nocookie %}
             <p>You have already voted, but you deleted your cookie.</p>
