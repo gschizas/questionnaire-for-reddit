@@ -281,7 +281,7 @@ def save():
 
         receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
 
-        user_is_tester = session['me']['user'] in os.getenv('TESTERS', '').split('.')
+        user_is_tester = session['me']['name'] in os.getenv('TESTERS', '').split('.')
 
         if receipt is not None:
             if request.cookies['receipt_id'] is None:
