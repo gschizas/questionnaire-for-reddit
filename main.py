@@ -23,7 +23,9 @@ from flask_cache import Cache
 
 import model
 
-USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v0.4 (by /u/gschizas)'
+__version__ = '0.4'
+
+USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v{0} (by /u/gschizas)'.format(__version__)
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
 app = Flask(__name__)
@@ -74,7 +76,7 @@ yaml.composer.Composer.compose_document = carry_over_compose_document
 
 @app.context_processor
 def inject_sysinfo():
-    return dict(sysinfo=dict(build="0.2"))
+    return dict(sysinfo=dict(build=__version__))
 
 
 @app.context_processor
