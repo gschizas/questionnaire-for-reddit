@@ -331,6 +331,8 @@ def save():
         v.datestamp = datetime.datetime.utcnow()
         model.db.session.add(v)
         # response = 'userid=' + session['me']['id'] + '\n'
+        for a in v.answers:
+            model.db.session.delete(a)
         for field, value in sorted(request.form.items(), key=questions_sort):
             if value is None or value == '':
                 continue
