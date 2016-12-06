@@ -16,6 +16,7 @@ import praw
 import prawcore
 import requests
 import ruamel.yaml as yaml
+import sqlalchemy
 from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
 from flask_cache import Cache
@@ -329,7 +330,10 @@ def save():
             a.answer_value = value
             a.vote = v
             model.db.session.add(a)
-        model.db.session.commit()
+        try:
+            model.db.session.commit()
+        except sqlalchemy.exc.OperationalError as e:
+            response = make_response(render_template('done.html', error=True))
     if response is None:
         response = make_response(render_template('done.html'))
     return response

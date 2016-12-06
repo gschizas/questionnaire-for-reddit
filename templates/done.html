@@ -22,6 +22,8 @@
             <p>You have already voted, but your receipt id is wrong.</p>
             <p>If you have written down your receipt id, <a href="{{ url_for('restore_cookie') }}">you can click here to
                 restore your cookie</a></p>
+        {% elif error %}
+            <p>An error occurred. Try refreshing the page</p>
         {% else %}
             <p>Something unexpected happened</p>
         {% endif %}
