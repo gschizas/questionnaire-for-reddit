@@ -155,14 +155,16 @@
                                     {% for ch_title in question.lines %}
                                         <div class="not_hidden">{{ ch_title }}</div>
 
-                                        <input id="q_{{ question.id }}_{{ loop.index }}" type="text"
+                                        <input id="q_{{ question.id }}_{{ loop.index }}"
+                                               name="q_{{ question.id }}_{{ loop.index }}"
+                                               type="text"
                                                data-provide="slider"
                                                data-slider-ticks='[{{ range(1,6)|join(',')|safe }}]'
                                                data-slider-ticks-labels='[{{ question.choices.values()|quote_list|join(',')|safe }}]'
                                                data-slider-min="1"
-                                               data-slider-max="5"
+                                               data-slider-max="{{ question.choices.values()|count }}"
                                                data-slider-step="1"
-                                               data-slider-value="3"
+                                               data-slider-value="{{ answers["q_{}_{}".format(question.id, loop.index)]|default(3) }}"
                                         />
                                         <br/>
                                         <br/>
