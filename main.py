@@ -129,6 +129,11 @@ def dropdown(table_name):
     pass
 
 
+@app.errorhandler(500)
+def page_error(e):
+    return render_template('error.html'), 500
+
+
 def reddit_agent():
     redirect_uri = urllib.parse.urljoin(os.getenv('REDDIT_OAUTH_REDIRECT_URL'), url_for('authorize_callback'))
     r = praw.Reddit(
