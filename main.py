@@ -280,6 +280,9 @@ def save():
                 return make_response(redirect(url_for('index')))
 
         receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
+
+        user_is_tester = session['me']['user'] in os.getenv('TESTERS', '').split('.')
+
         if receipt is not None:
             if request.cookies['receipt_id'] is None:
                 return render_template('done.html', nocookie=True)
@@ -289,12 +292,16 @@ def save():
             userhash = hashlib.sha256(session['me']['id'].encode('utf8') + receipt_id_bytes).hexdigest()
             if model.Vote.query.filter_by(user_hash=userhash).count() == 0:
                 return render_template('done.html', tamper=True)
-            response = make_response(render_template('done.html', voted=True, receipt_id=receipt_id_text))
+            response = make_response(
+                render_template('done.html', voted=True, receipt_id=receipt_id_text, request=request,
+                                user_is_tester=user_is_tester))
         else:
             receipt_id = uuid.uuid4()
             receipt_id_text = str(receipt_id)
             userhash = hashlib.sha256(session['me']['id'].encode('utf8') + receipt_id.bytes).hexdigest()
-            response = make_response(render_template('done.html', voted=True, receipt_id=receipt_id_text))
+            response = make_response(
+                render_template('done.html', voted=True, receipt_id=receipt_id_text, request=request,
+                                user_is_tester=user_is_tester))
             response.set_cookie('receipt_id', value=receipt_id_text)
             rct = model.Receipt()
             rct.user_id = session['me']['id']

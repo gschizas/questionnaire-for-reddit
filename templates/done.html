@@ -3,9 +3,17 @@
     <div class="container">
         {% if voted %}
             <p>Thank you for voting.</p>
-            <p>Your receipt id is <samp>{{ receipt_id }}</samp>. Please write that down in a safe place, in case you delete your
+            <p>Your receipt id is <samp>{{ receipt_id }}</samp>. Please write that down in a safe place, in case you
+                delete your
                 cookies and want to change your answers
             </p>
+            {% if user_is_tester %}
+                <pre>
+            {% for answer_code, answer_value in request.form.items() %}
+                {{ answer_code }} = {{ answer_value }}
+            {% endfor %}
+            </pre>
+            {% endif %}
         {% elif nocookie %}
             <p>You have already voted, but you deleted your cookie.</p>
             <p>If you have written down your receipt id, <a href="{{ url_for('restore_cookie') }}">you can click here to
