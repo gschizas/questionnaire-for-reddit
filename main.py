@@ -336,6 +336,8 @@ def save():
         for field, value in sorted(request.form.items(), key=questions_sort):
             if value is None or value == '':
                 continue
+            if field in ('cmd_save', 'g-recaptcha-response'):
+                continue
             a = model.Answer.query.filter_by(code=field, vote=v).first()
             if a is None:
                 a = model.Answer()
