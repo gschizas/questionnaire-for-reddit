@@ -7,6 +7,7 @@ import hashlib
 import logging
 import os
 import pathlib
+import re
 import urllib.parse
 import urllib.request
 import uuid
@@ -281,7 +282,9 @@ def save():
 
         receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
 
-        user_is_tester = session['me']['name'] in os.getenv('TESTERS', '').split('.')
+        current_testers_text = os.getenv('TESTERS', '')
+        current_testers = re.split('\W', current_testers_text)
+        user_is_tester = session['me']['name'] in current_testers
 
         if receipt is not None:
             if request.cookies['receipt_id'] is None:
