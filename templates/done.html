@@ -9,7 +9,7 @@
             </p>
             {% if user_is_tester %}
                 <pre>
-            {% for answer_code, answer_value in request.form.items() %}
+            {% for answer_code, answer_value in sorted(request.form.items()) %}
                 {{ answer_code }} = {{ answer_value }}
             {% endfor %}
             </pre>
