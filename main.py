@@ -363,6 +363,8 @@ def save():
             if a is None:
                 a = model.Answer()
                 a.code = field
+                if len(v) >= 512:
+                    v = v[:511] + '\u2026'
                 a.vote = v
             a.answer_value = value
             a.vote = v
