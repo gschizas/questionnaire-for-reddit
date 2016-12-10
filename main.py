@@ -357,6 +357,8 @@ def save():
                 continue
             if field in ('cmd_save', 'g-recaptcha-response'):
                 continue
+            if not field.startswith('q_'):
+                continue
             a = model.Answer.query.filter_by(code=field, vote=v).first()
             if a is None:
                 a = model.Answer()
