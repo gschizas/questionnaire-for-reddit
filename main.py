@@ -363,9 +363,9 @@ def save():
             if a is None:
                 a = model.Answer()
                 a.code = field
-                if len(v) >= 512:
-                    v = v[:511] + '\u2026'
                 a.vote = v
+            if len(value) >= 512:
+                value = value[:511] + '\u2026'
             a.answer_value = value
             a.vote = v
             model.db.session.add(a)
