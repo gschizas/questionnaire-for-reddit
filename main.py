@@ -242,6 +242,25 @@ def home():
         recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
 
 
+@app.route('/results')
+def results():
+    current_testers_text = os.getenv('TESTERS', '')
+    current_testers = re.split('\W', current_testers_text)
+    user_is_tester = session['me']['name'] in current_testers
+    if not user_is_tester:
+        abort(503)
+
+    from sqlalchemy import func
+    with app.app_context():
+        results = model.db.session.query(
+            model.Answer.code,
+            model.Answer.answer_value,
+            func.count(model.Answer.answer_id)).group_by(
+            model.Answer.code,
+            model.Answer.answer_value).all()
+        return render_template('results.html', results=results)
+
+
 @cache.cached(timeout=300)
 def read_questionnaire():
     url = os.getenv('QUESTIONNAIRE_URL')

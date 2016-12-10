@@ -1,0 +1,23 @@
+{% extends "_main.html" %}
+{% block body %}
+    <div class="container">
+        <table>
+            <thead>
+            <tr>
+                <th>Question</th>
+                <th>Answer</th>
+                <th>Votes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {%- for answer_code, answer_value, answer_count in results|sort -%}
+                <tr>
+                    <td>{{- answer_code -}}</td>
+                    <td>{{- answer_value -}}</td>
+                    <td>{{- answer_count -}}</td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
