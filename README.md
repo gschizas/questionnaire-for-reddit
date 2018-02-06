@@ -53,7 +53,7 @@ After pressing the "create app button" (step 1.6 above):
 Note the client id (yellow) and the client secret (orange) (step 2 above):  
 ![Client ID and Client Secret](static/images/setup_step4.png)
 
-###Database
+### Database
 Ok, now you just need to create a new database to record any answers. This will only be for development, of course. 
 If/when you deploy to heroku, the database will be created from heroku itself.
  
