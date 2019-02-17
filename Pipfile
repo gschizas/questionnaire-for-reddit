@@ -1,12 +1,9 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 Flask = "*"
 praw = "*"
 "ruamel.yaml" = "*"
@@ -16,12 +13,9 @@ SQLAlchemy = "*"
 "psycopg2" = "*"
 flask-sqlalchemy = "*"
 Flask-Babel = "*"
-flask-cache = "*"
-
+flask-caching = "*"
 
 [dev-packages]
-
-
 
 [requires]
 python_version = "3.7"

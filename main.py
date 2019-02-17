@@ -20,7 +20,7 @@ import ruamel.yaml as yaml
 import sqlalchemy
 from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
-from flask_cache import Cache
+from flask_caching import Cache
 
 import model
 
