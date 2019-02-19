@@ -6,7 +6,7 @@
 
 In order to test this you will need:
 
-* [Python 3.5](https://www.python.org/downloads/release/python-352/). This could probably be made to work with Python 2.7 as well or any Python 3.x, but I prefer Python 3.
+* [Python 3.7](https://www.python.org/downloads/release/python-372/). This could probably be made to work with Python 2.7 as well or any Python 3.x, but I prefer Python 3.
 * Some PostgreSQL installation. You can use a portable installation as well:
   * The easiest method would be to do a full installation of [PostgreSQL from the official site](https://www.postgresql.org/download/).
   * For Windows or Linux, you can just download the relevant [PostgreSQL binaries](http://www.enterprisedb.com/products-services-training/pgbindownload).  
