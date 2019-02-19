@@ -11,7 +11,7 @@ In order to test this you will need:
   * The easiest method would be to do a full installation of [PostgreSQL from the official site](https://www.postgresql.org/download/).
   * For Windows or Linux, you can just download the relevant [PostgreSQL binaries](http://www.enterprisedb.com/products-services-training/pgbindownload).  
   * For macOS, you can use [Postgres.app](http://postgresapp.com/) 
-* The libraries in requirements.txt
+* The libraries in [Pipfile](https://pipenv.readthedocs.io/)
   * **Flask**: The base for the web site
   * **praw**: For interaction with reddit
   * **ruamel.yaml**: For YAML reading (much nicer than PyYAML)
