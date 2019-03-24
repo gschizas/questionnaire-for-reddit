@@ -115,10 +115,10 @@
                                                 {%- else -%}
                                                     <span>
                                                         <input type="checkbox"
-                                                                   name="q_{{ question.id }}_{{ item[0] }}"
-                                                                   id="q_{{ question.id }}_{{ item[0] }}"
-                                                                    {{ "checked" if answers["q_{}_{}".format(question.id, item[0])]=="YES" }}
-                                                                   value="YES"/>&nbsp;
+                                                               name="q_{{ question.id }}_{{ item[0] }}"
+                                                               id="q_{{ question.id }}_{{ item[0] }}"
+                                                                {{ "checked" if answers["q_{}_{}".format(question.id, item[0])]=="YES" }}
+                                                               value="YES"/>&nbsp;
                                                         <label for="q_{{ question.id }}_{{ item[0] }}">
                                                                 <i class="icon-leaf"></i>{{ item[1].title }}
                                                             </label>
