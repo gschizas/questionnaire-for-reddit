@@ -30,7 +30,7 @@
                                             <input type="radio"
                                                    name="q_{{ question.id }}"
                                                     {{ "checked" if answers["q_{}".format(question.id)]==ch_key }}
-                                                   value="{{ ch_key }}">{{ ch_title }}
+                                                   value="{{ ch_key }}">{{ ch_title -}}
                                         </label>
                                     {% endfor %}
                                     {%- if question.other %}
