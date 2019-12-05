@@ -45,7 +45,7 @@
                                         </label>
                                     {%- endif %}
                                     <label class="radio">
-                                        <input type="radio" name="q_{{ question.id }}" value="">{{ config.get('na_label', 'I prefer not to answer*')}}{{ "" -}}
+                                        <input type="radio" name="q_{{ question.id }}" value="">{{ config.get('na_label', 'I prefer not to answer')}}{{ "" -}}
                                     </label>
                                 </div>
                             {% elif question.kind == 'checkbox' %}
