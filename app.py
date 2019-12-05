@@ -239,6 +239,7 @@ def home():
         'home.html',
         questions=questions,
         answers=answers,
+        config=config,
         recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
 
 
