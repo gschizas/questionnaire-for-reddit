@@ -245,6 +245,8 @@ def home():
 
 @app.route('/results')
 def results():
+    if 'me' not in session:
+        return make_response(redirect(url_for('index')))
     current_testers_text = os.getenv('TESTERS', '')
     current_testers = re.split('\W', current_testers_text)
     user_is_tester = session['me']['name'] in current_testers
