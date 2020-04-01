@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import binascii
-import collections
 import datetime
 import hashlib
 import logging
@@ -16,7 +15,6 @@ import uuid
 import praw
 import prawcore
 import requests
-import ruamel.yaml as yaml
 import sqlalchemy
 from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
@@ -25,6 +23,7 @@ from flask_caching import Cache
 import model
 
 __version__ = '0.4'
+from yaml_wrapper import yaml
 
 USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v{0} (by /u/gschizas)'.format(__version__)
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
@@ -44,35 +43,6 @@ model.db.init_app(app)
 with app.app_context():
     model.db.create_all()
 
-
-def dict_representer(dumper, data):
-    return dumper.represent_dict(data.iteritems())
-
-
-def dict_constructor(loader, node):
-    return collections.OrderedDict(loader.construct_pairs(node))
-
-
-def literal_str_representer(dumper, data):
-    if '\n' in data:
-        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data, style='|')
-    else:
-        return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data)
-
-
-def carry_over_compose_document(self):
-    self.get_event()
-    node = self.compose_node(None, None)
-    self.get_event()
-    # this prevents cleaning of anchors between documents in **one stream**
-    # self.anchors = {}
-    return node
-
-
-yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
-yaml.add_representer(collections.OrderedDict, dict_representer)
-yaml.add_representer(str, literal_str_representer)
-yaml.composer.Composer.compose_document = carry_over_compose_document
 
 
 @app.context_processor
