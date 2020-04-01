@@ -22,7 +22,9 @@ from flask_caching import Cache
 
 import model
 
-__version__ = '0.4'
+__version__ = '0.5'
+
+from mock import mock_app, MockRedditAgent
 from yaml_wrapper import yaml
 
 USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v{0} (by /u/gschizas)'.format(__version__)
@@ -43,6 +45,8 @@ model.db.init_app(app)
 with app.app_context():
     model.db.create_all()
 
+if os.environ.get('MOCK') == '1':
+    app.register_blueprint(mock_app)
 
 
 @app.context_processor
@@ -109,6 +113,8 @@ def page_error(e):
 
 
 def reddit_agent():
+    if os.environ.get('MOCK') == '1':
+        return MockRedditAgent()
     redirect_uri = urllib.parse.urljoin(os.getenv('REDDIT_OAUTH_REDIRECT_URL'), url_for('authorize_callback'))
     r = praw.Reddit(
         client_id=os.getenv('REDDIT_OAUTH_CLIENT_ID'),
