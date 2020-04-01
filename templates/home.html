@@ -156,18 +156,20 @@
 
 
                                     {% for ch_title in question.lines %}
-                                        <div class="not_hidden">{{ ch_title }}</div>
+                                        {% set values = question.choices.values() %}
+                                        {% set midvalue = (((values|count) + 1)/2)|round|int %}
+                                        <div class="not_hidden">{{ ch_title }}<br/></div>
 
                                         <input id="q_{{ question.id }}_{{ loop.index }}"
                                                name="q_{{ question.id }}_{{ loop.index }}"
                                                type="text"
                                                data-provide="slider"
-                                               data-slider-ticks='[{{ range(1,6)|join(',')|safe }}]'
-                                               data-slider-ticks-labels='[{{ question.choices.values()|quote_list|join(',')|safe }}]'
+                                               data-slider-ticks='[{{ range(1,1+values|count)|join(',')|safe }}]'
+                                               data-slider-ticks-labels='[{{ values|quote_list|join(',')|safe }}]'
                                                data-slider-min="1"
                                                data-slider-max="{{ question.choices.values()|count }}"
                                                data-slider-step="1"
-                                               data-slider-value="{{ answers["q_{}_{}".format(question.id, loop.index)]|default(3) }}"
+                                               data-slider-value="{{ answers["q_{}_{}".format(question.id, loop.index)]|default(midvalue) }}"
                                         />
                                         <br/>
                                         <br/>
