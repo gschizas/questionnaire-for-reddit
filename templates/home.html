@@ -11,7 +11,7 @@
                     {% for question in questions %}
                         <div class="form-group col-sm-12">
                             {% if question.kind != 'header' %}
-                                <h4>{{ question.id }}. {{ question.title }}</h4>
+                                <h4><a name="q_{{ question.id }}"></a>{{ question.id }}. {{ question.title }}</h4>
                             {% endif %}
                             {% if question.kind == 'header' %}
                                 {% if question.level|default(1) == 1 %}
