@@ -19,6 +19,7 @@ import sqlalchemy
 from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
 from flask_babel import Babel
 from flask_caching import Cache
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 import model
 
@@ -35,6 +36,7 @@ babel = Babel(app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=True, x_host=1)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
