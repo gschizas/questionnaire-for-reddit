@@ -166,3 +166,4 @@ pip-selfcheck.json
 .idea/questionnaire-for-reddit.iml
 .idea
 .vscode/
+data/
