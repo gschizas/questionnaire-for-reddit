@@ -255,7 +255,7 @@ def read_questionnaire():
             print(questionnaire_data)
             abort(503)
         questions_list = questionnaire_data['data']['content_md']
-    questions = list(yaml.round_trip_load_all(questions_list))
+    questions = list(yaml.load_all(questions_list))
     return questions
 
 
