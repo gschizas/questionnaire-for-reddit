@@ -9,15 +9,14 @@ praw = "*"
 "ruamel.yaml" = "*"
 gunicorn = "*"
 SQLAlchemy = "*"
-"pg8000" = "*"
-"psycopg2" = "*"
 flask-sqlalchemy = "*"
 Flask-Babel = "*"
 flask-caching = "*"
 faker = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 python-dotenv = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
