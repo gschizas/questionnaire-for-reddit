@@ -4,17 +4,22 @@
         <table class="table-striped">
             <thead>
             <tr>
-                <th>Question</th>
-                <th>Answer</th>
+                <th colspan="3">Question</th>
+                <th colspan="2">Answer</th>
                 <th>Votes</th>
             </tr>
             </thead>
             <tbody>
-            {%- for answer_code, answer_value, answer_count in results|sort -%}
+            {%- for result in results -%}
                 <tr>
-                    <td>{{- answer_code -}}</td>
-                    <td>{{- answer_value -}}</td>
-                    <td>{{- answer_count -}}</td>
+                    <td>{{- result.question_code -}}</td>
+                    <td>{{- result.kind -}}</td>
+                    <td>{{- result.question_text -}}</td>
+                    <td {%- if result.answer_text == '\0'%} colspan="2"{% endif -%}>{{- result.answer_value -}}</td>
+                    {%- if result.answer_text != '\0' -%}
+                    <td>{{- result.answer_text -}}</td>
+                    {%- endif -%}
+                    <td>{{- result.vote_count -}}</td>
                 </tr>
             {%- endfor -%}
             </tbody>

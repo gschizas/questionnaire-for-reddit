@@ -16,7 +16,8 @@ import praw
 import prawcore
 import requests
 import sqlalchemy
-from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response)
+from flask import (Flask, render_template, make_response, request, redirect, url_for, session, abort, g, Response,
+                   jsonify)
 from flask_babel import Babel
 from flask_caching import Cache
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -233,13 +234,87 @@ def results():
 
     from sqlalchemy import func
     with app.app_context():
-        results = model.db.session.query(
+        questions = read_questionnaire()
+        raw_results = model.db.session.query(
             model.Answer.code,
             model.Answer.answer_value,
             func.count(model.Answer.answer_id)).group_by(
             model.Answer.code,
             model.Answer.answer_value).all()
-        return render_template('results.html', results=results)
+
+        pure_questions = [q for q in questions if q['kind'] not in ('config', 'header')]
+        raw_results = sorted(
+            [expand_question(result, pure_questions) for result in raw_results],
+            key=lambda x: x['sort_order'])
+        if request.query_string.lower() == b'json':
+            for r in raw_results:
+                r.pop('sort_order')
+            response = make_response(jsonify(raw_results))
+            response.headers['Content-Disposition'] = 'attachement; filename=results.json'
+            return response
+        else:
+            return render_template('results.html', results=raw_results)
+
+
+def expand_question(result, questions):
+    question_code_raw = result[0]
+    answer_value = result[1]
+    vote_count = result[2]
+    question_code_parts = question_code_raw.split('_')
+    question_code = int(question_code_parts[1]) - 1
+    question_suffix = question_code_parts[2] if len(question_code_parts) == 3 else ''
+    answer_text = '\0'
+    question = questions[question_code]
+    question_kind = question['kind']
+    question_text = question['title']
+    if 'choices' in question:
+        if question_kind == 'checkbox' and question_suffix != 'text':
+            answer_value = question_suffix
+        if question_kind == 'tree':
+            answer_text = find_choice(question['choices'], answer_value)
+        elif question_kind == 'checktree':
+            answer_text = find_choice(question['choices'], question_code_parts[2])
+        elif question_kind in ('radio', 'checkbox'):
+            if answer_value in question['choices']:
+                answer_text = question['choices'][answer_value]
+            else:
+                answer_text = answer_value
+                answer_value = 'Other'
+        elif question_kind == 'scale-matrix':
+            subquestion = question['lines'][int(question_suffix) - 1]
+            if subquestion:
+                question_text += ': ' + subquestion
+            answer_keys = list(question['choices'].keys())
+            if answer_value not in ('maybe', 'no', 'yes'):
+                answer_text = question['choices'][answer_keys[int(answer_value) - 1]]
+            else:
+                answer_text += f'†{answer_value}'
+            # answer_value = question['choices'][f'A{answer_value}']
+
+    sort_order = question_code, question_code_parts[2:]
+    # question_code_raw += '::' + question['kind']
+    return {
+        'kind': question_kind,
+        'question_number': 1 + question_code,
+        'question_code': question_code_raw,
+        'question_text': question_text,
+        'answer_value': answer_value,
+        'answer_text': answer_text,
+        'vote_count': vote_count,
+        'sort_order': sort_order}
+
+
+def find_choice(choices, value):
+    if value in choices:
+        return choices[value]['title']
+
+    new_value = ''
+    for choice_name, choice in choices.items():
+        if 'choices' in choice:
+            new_value = find_choice(choice['choices'], value)
+            if new_value:
+                return new_value
+    return new_value
 
 
 @cache.cached(timeout=300)
