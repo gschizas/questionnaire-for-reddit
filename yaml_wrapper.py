@@ -18,13 +18,24 @@ def literal_str_representer(dumper, data):
         return dumper.represent_scalar(yaml.resolver.BaseResolver.DEFAULT_SCALAR_TAG, data)
 
 
-def carry_over_compose_document(self):
-    # self.get_event()
-    node = self.compose_node(None, None)
-    # self.get_event()
-    # this prevents cleaning of anchors between documents in **one stream**
-    # self.anchors = {}
-    return node
+class CarryOverComposer(ruamel.yaml.composer.Composer):
+    def __init__(self, loader=None):
+        super().__init__(loader=loader)
+
+    def compose_document(self):
+        # Drop the DOCUMENT-START event.
+        self.parser.get_event()
+
+        # Compose the root node.
+        node = self.compose_node(None, None)
+
+        # Drop the DOCUMENT-END event.
+        self.parser.get_event()
+
+        if not (hasattr(self, 'anchors') and getattr(self, 'anchors')):
+            # noinspection PyAttributeOutsideInit
+            self.anchors = {}
+        return node
 
 
 def _yaml():
@@ -32,7 +43,7 @@ def _yaml():
     result.constructor.add_constructor(ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
     result.representer.add_representer(collections.OrderedDict, dict_representer)
     result.representer.add_representer(str, literal_str_representer)
-    # result.Composer.compose_document = carry_over_compose_document
+    result.Composer = CarryOverComposer
     return result
 
 
