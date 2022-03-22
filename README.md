@@ -6,10 +6,10 @@
 
 In order to test this you will need:
 
-* [Python 3.7](https://www.python.org/downloads/release/python-372/). This could probably be made to work with Python 2.7 as well or any Python 3.x, but I prefer Python 3.
+* [Python 3.10](https://www.python.org/downloads/release/python-3103/). This could probably be made to work with Python 2.7 as well or any Python 3.x, but I prefer Python 3.
 * Some PostgreSQL installation. You can use a portable installation as well:
   * The easiest method would be to do a full installation of [PostgreSQL from the official site](https://www.postgresql.org/download/).
-  * For Windows or Linux, you can just download the relevant [PostgreSQL binaries](http://www.enterprisedb.com/products-services-training/pgbindownload).  
+  * For Windows or Linux, you can just download the relevant [PostgreSQL binaries](http://www.enterprisedb.com/products-services-training/pgbindownload).
   * For macOS, you can use [Postgres.app](http://postgresapp.com/) 
 * The libraries in [Pipfile](https://pipenv.readthedocs.io/)
   * **Flask**: The base for the web site
@@ -20,7 +20,7 @@ In order to test this you will need:
   * **pg8000**: Since I'm using a postgres, we need to have a way to connect.
   * **psycopg2**: I only use pg8000, but SQLAlchemy asks for this, too
   * **flask_sqlalchemy**: A way to connect Flask with SQLAlchemy.
-   
+
 ## Setup
 
 ### Reddit application 
