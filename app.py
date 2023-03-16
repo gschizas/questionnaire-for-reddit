@@ -32,8 +32,21 @@ from yaml_wrapper import yaml
 USER_AGENT = 'python:gr.terrasoft.reddit:questionnaire:v{0} (by /u/gschizas)'.format(__version__)
 EMOJI_FLAG_OFFSET = ord('🇦') - ord('A')
 
+
+def get_locale():
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.locale
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(['en', 'el', 'de'])
+
+
 app = Flask(__name__)
 babel = Babel(app)
+babel.init_app(app, locale_selector=get_locale)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -83,18 +96,6 @@ def emojiflag(flag_letters):
 @app.template_filter('quote_list')
 def surround_by_quote(a_list):
     return ['"{}"'.format(an_element) for an_element in a_list]
-
-
-@babel.localeselector
-def get_locale():
-    # if a user is logged in, use the locale from the user settings
-    user = getattr(g, 'user', None)
-    if user is not None:
-        return user.locale
-    # otherwise try to guess the language from the user accept
-    # header the browser transmits.  We support de/fr/en in this
-    # example.  The best match wins.
-    return request.accept_languages.best_match(['en', 'el', 'de'])
 
 
 @babel.timezoneselector
