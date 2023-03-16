@@ -44,9 +44,15 @@ def get_locale():
     return request.accept_languages.best_match(['en', 'el', 'de'])
 
 
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
+
+
 app = Flask(__name__)
 babel = Babel(app)
-babel.init_app(app, locale_selector=get_locale)
+babel.init_app(app, locale_selector=get_locale, timezone_selector=get_timezone)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -96,13 +102,6 @@ def emojiflag(flag_letters):
 @app.template_filter('quote_list')
 def surround_by_quote(a_list):
     return ['"{}"'.format(an_element) for an_element in a_list]
-
-
-@babel.timezoneselector
-def get_timezone():
-    user = getattr(g, 'user', None)
-    if user is not None:
-        return user.timezone
 
 
 @app.route('/_dropdown/<table_name>', methods=('GET', 'POST'))
