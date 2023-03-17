@@ -219,17 +219,15 @@ def home():
         questions=questions,
         answers=answers,
         config=config,
-        recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'))
+        recaptcha_site_key=os.environ.get('RECAPTCHA_SITE_KEY'),
+        user_is_tester=is_tester(session['me']['name']))
 
 
 @app.route('/results')
 def results():
     if 'me' not in session:
         return make_response(redirect(url_for('index')))
-    current_testers_text = os.getenv('TESTERS', '')
-    current_testers = re.split(r'\W', current_testers_text)
-    user_is_tester = session['me']['name'] in current_testers
-    if not user_is_tester:
+    if not is_tester(session['me']['name']):
         abort(503)
 
     from sqlalchemy import func
@@ -253,7 +251,7 @@ def results():
             response.headers['Content-Disposition'] = 'attachement; filename=results.json'
             return response
         else:
-            return render_template('results.html', results=raw_results)
+            return render_template('results.html', results=raw_results, user_is_tester=user_is_tester)
 
 
 def expand_question(result, questions):
@@ -371,9 +369,7 @@ def save():
 
         receipt = model.Receipt.query.filter_by(user_id=session['me']['id']).first()
 
-        current_testers_text = os.getenv('TESTERS', '')
-        current_testers = re.split(r'\W', current_testers_text)
-        user_is_tester = session['me']['name'] in current_testers
+        user_is_tester = is_tester(session['me']['name'])
 
         if receipt is not None:
             if request.cookies['receipt_id'] is None:
@@ -432,6 +428,13 @@ def save():
     if response is None:
         response = make_response(render_template('done.html'))
     return response
+
+
+def is_tester(username):
+    current_testers_text = os.getenv('TESTERS', '')
+    current_testers = re.split(r'\W', current_testers_text)
+    user_is_tester = username in current_testers
+    return user_is_tester
 
 
 def main():
