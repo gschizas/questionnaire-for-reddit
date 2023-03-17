@@ -53,7 +53,7 @@ def get_timezone():
 app = Flask(__name__)
 babel = Babel(app)
 babel.init_app(app, locale_selector=get_locale, timezone_selector=get_timezone)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache = Cache(app, config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': './cache/', 'CACHE_DEFAULT_TIMEOUT': 300})
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=True, x_host=1)
